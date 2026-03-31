@@ -1,0 +1,44 @@
+title: Heimassistent
+wallpanel:
+  enabled: false
+  enabled_on_tabs:
+    - wohnzimmer
+  debug: false
+  hide_toolbar: true
+  hide_sidebar: true
+  fullscreen: true
+  idle_time: 1
+  keep_screen_on_time: 86400
+  black_screen_after_time: 0
+  control_reactivation_time: 1
+  crossfade_time: 3
+  display_time: 12
+  screensaver_stop_navigation_path: /lovelace/wohnzimmer
+  image_url: media-source://media_source/local/WN4_Foto
+  image_fit: contain
+  image_list_update_interval: 600
+  image_order: random
+  image_animation_ken_burns: true
+  image_animation_ken_burns_zoom: 1.5
+  image_excludes: []
+  show_image_info: true
+  show_progress_bar: true
+  fetch_address_data: true
+  image_info_template: >-
+    <div style="text-align:right; text-shadow:0px 0px 1px rgba(0, 200, 0, 1);
+    -webkit-text-stroke:5px
+    black;">${address.country!suffix=<br>}${address.state!suffix= -
+    }${address.town|address.city|address.municipality|address.county!suffix= -
+    }${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}
+  screensaver_entity: input_boolean.wallpanel_screensaver
+  cards: []
+  card_interaction: false
+  style:
+    wallpanel-screensaver-image-info:
+      font-size: 7vh
+      font-weight: 900
+      color: '#ffff00 !important'
+      text-shadow: '0px 0px 1px rgba(0, 0, 0, 1); -webkit-text-stroke: 3px black;'
+      background-color: '#00000000'
+views:
+# Ab hier starten meine eigentlichen Dashboards
