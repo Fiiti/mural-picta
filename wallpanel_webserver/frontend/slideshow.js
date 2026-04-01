@@ -9,6 +9,7 @@ let mediaList = [];
 let mediaIndex = 0;
 let activeSlot = "a"; // "a" | "b"
 let displayTimer = null;
+let progressBarTimer = null;
 let mediaListRefreshTimer = null;
 let isPaused = false;
 
@@ -111,9 +112,14 @@ function showNextMedia(isFirst = false) {
       }
     }
 
-    // Fortschrittsbalken neu starten
+    // Fortschrittsbalken mit Verzögerung starten:
+    // Erst nach crossfade_time beginnen, damit der Balken bei 0% startet
+    // wenn das Bild vollständig sichtbar ist – und bei 100% ankommt
+    // genau wenn das nächste Bild vollständig eingeblendet wurde.
     if (config.show_progress_bar) {
-      restartProgressBar(item);
+      if (progressBarTimer) clearTimeout(progressBarTimer);
+      const crossfadeMs = Math.round((config.crossfade_time || 0) * 1000);
+      progressBarTimer = setTimeout(() => restartProgressBar(item), crossfadeMs);
     }
 
     // Timer für nächstes Medium
@@ -167,9 +173,9 @@ function loadMediaIntoSlot(slotEl, item, onReady) {
 // Transition statt CSS-Animation: sofort auf 0% setzen (ohne Übergang),
 // dann Übergangs-Dauer setzen und auf 100% fahren.
 function restartProgressBar(item) {
-  // Gesamtdauer = Anzeigezeit + Überblendzeit, damit der Balken genau dann
-  // bei 100% ankommt, wenn das neue Bild vollständig eingeblendet ist.
-  const seconds = getDisplayTimeMs(item) / 1000 + (config.crossfade_time || 3);
+  // Dauer = Anzeigezeit. Zusammen mit dem verzögerten Start (um crossfade_time)
+  // endet der Balken exakt wenn das nächste Bild vollständig sichtbar ist.
+  const seconds = getDisplayTimeMs(item) / 1000;
   // Schritt 1: Transition deaktivieren und auf 0 zurücksetzen
   progressBar.style.transition = "none";
   progressBar.style.width = "0%";
