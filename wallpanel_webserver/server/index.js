@@ -13,8 +13,13 @@ app.use(cors());
 // Statische Dateien: Diashow-Frontend
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-// Admin-Oberfläche unter /admin
-app.use("/admin", express.static(path.join(__dirname, "../admin")));
+// Admin-Oberfläche unter /admin (Vite-Build aus admin/dist/)
+const adminDistPath = path.join(__dirname, "../admin/dist");
+app.use("/admin", express.static(adminDistPath));
+// SPA-Fallback: alle /admin/* Routen liefern index.html
+app.get("/admin/*", (req, res) => {
+  res.sendFile(path.join(adminDistPath, "index.html"));
+});
 
 // Vendor-Bibliotheken aus node_modules mit korrektem Content-Type
 app.get("/vendor/exifr.js", (req, res) => {

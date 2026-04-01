@@ -1,0 +1,158 @@
+{
+  "sections": {
+    "mediaSource": "Medienquelle",
+    "slideshow": "Diashow-Zeiten",
+    "kenBurns": "Ken-Burns-Effekt",
+    "infoOverlay": "Bild-Info-Overlay",
+    "video": "Video",
+    "display": "Anzeige",
+    "filter": "Filter",
+    "debug": "Debug",
+    "security": "Sicherheit",
+    "system": "System & Status"
+  },
+  "fields": {
+    "media_base_path": {
+      "label": "Medien-Basispfad",
+      "hint": "Absoluter Pfad zum Ordner mit Bildern und Videos. Alle Unterordner bis 5 Ebenen tief werden rekursiv einbezogen."
+    },
+    "media_list_update_interval": {
+      "label": "Medienliste-Aktualisierungsintervall",
+      "hint": "Wie oft die Medienliste neu erstellt wird (in Sekunden, minimum 60). Besonders wichtig bei zufälliger Reihenfolge."
+    },
+    "media_order": {
+      "label": "Wiedergabereihenfolge",
+      "hint": "Bestimmt die Reihenfolge, in der Bilder und Videos angezeigt werden.",
+      "options": {
+        "random": "Zufällig",
+        "name": "Nach Dateiname",
+        "date": "Nach Datum"
+      }
+    },
+    "display_time_image": {
+      "label": "Anzeigedauer pro Bild (Sekunden)",
+      "hint": "Wie viele Sekunden jedes Bild angezeigt wird, bevor zum nächsten gewechselt wird."
+    },
+    "display_time_video": {
+      "label": "Anzeigedauer pro Video (Sekunden)",
+      "hint": "Wie viele Sekunden jedes Video angezeigt wird. Ist das Video kürzer, wird es bis zur eingestellten Zeit wiederholt."
+    },
+    "crossfade_time": {
+      "label": "Überblendungsdauer (Sekunden)",
+      "hint": "Dauer der Überblendung zwischen Medien. 0 = keine Überblendung."
+    },
+    "image_fit": {
+      "label": "Bildanpassungsmodus",
+      "hint": "Wie Bilder auf den Bildschirm skaliert werden.",
+      "options": {
+        "cover": "Cover (Bildschirm füllen, Ränder können abgeschnitten werden)",
+        "contain": "Contain (Bild vollständig zeigen, schwarze Balken möglich)"
+      }
+    },
+    "ken_burns_enabled": {
+      "label": "Ken-Burns-Effekt aktivieren",
+      "hint": "Bewegt und zoomt Bilder und Videos langsam für einen kinematografischen Effekt."
+    },
+    "ken_burns_zoom": {
+      "label": "Ken-Burns-Zoomfaktor",
+      "hint": "Maximaler Zoomlevel beim Ken-Burns-Effekt (z.B. 1.3 = 130% der Originalgröße). Bereich: 1.0 – 2.0."
+    },
+    "video_volume": {
+      "label": "Videolautstärke",
+      "hint": "Wiedergabelautstärke für Videos. 0 = stumm, 1 = volle Lautstärke."
+    },
+    "video_loop": {
+      "label": "Videos wiederholen",
+      "hint": "Wenn aktiviert, werden Videos wiederholt, bis die konfigurierte Anzeigedauer erreicht ist."
+    },
+    "show_progress_bar": {
+      "label": "Fortschrittsbalken anzeigen",
+      "hint": "Zeigt eine dünne Fortschrittslinie am unteren Bildschirmrand, die die verbleibende Anzeigedauer anzeigt."
+    },
+    "show_image_info": {
+      "label": "Info-Overlay anzeigen",
+      "hint": "Zeigt Bild-Metadaten (Dateiname, Datum, Ort) als Overlay in der Diashow."
+    },
+    "image_info_template": {
+      "label": "Info-Overlay-Template",
+      "hint": "HTML-Template für das Info-Overlay. Verwende Template-Variablen wie ${filename}, ${DateTimeOriginal}, ${address.city} um Metadaten einzufügen. Klicke auf den Hilfe-Button für die vollständige Referenz."
+    },
+    "info_position": {
+      "label": "Overlay-Position",
+      "hint": "Wo auf dem Bildschirm das Info-Overlay angezeigt wird.",
+      "options": {
+        "bottom-right": "Unten rechts",
+        "bottom-left": "Unten links",
+        "top-right": "Oben rechts",
+        "top-left": "Oben links"
+      }
+    },
+    "fetch_address_data": {
+      "label": "Standort aus GPS ermitteln",
+      "hint": "Ermittelt Ortsnamen aus GPS-Koordinaten in EXIF-Daten über die Nominatim API (OpenStreetMap). Benötigt eine Internetverbindung."
+    },
+    "exclude_filenames": {
+      "label": "Dateinamen ausschließen",
+      "hint": "Dateien, die einem dieser Muster entsprechen, werden von der Diashow ausgeschlossen. Unterstützt genaue Dateinamen oder reguläre Ausdrücke. Enter oder Komma zum Hinzufügen."
+    },
+    "debug_mode": {
+      "label": "Debug-Modus aktivieren",
+      "hint": "Zeigt ein Debug-Overlay mit EXIF-Metadaten, GPS-Koordinaten, ermittelten Adressdaten und Versionsinformationen."
+    },
+    "admin_pin": {
+      "label": "Admin-PIN-Schutz",
+      "hint": "Schütze das Admin-Panel mit einem alphanumerischen PIN (mindestens 4 Zeichen). Leer lassen zum Deaktivieren."
+    }
+  },
+  "buttons": {
+    "save": "Einstellungen speichern",
+    "reload": "Diashow neu laden",
+    "restart": "Server neu starten",
+    "openHelp": "? Template-Hilfe",
+    "setPin": "PIN setzen",
+    "changePin": "PIN ändern",
+    "removePin": "PIN-Schutz entfernen",
+    "close": "Schließen",
+    "login": "Anmelden"
+  },
+  "status": {
+    "saved": "Einstellungen erfolgreich gespeichert.",
+    "saveError": "Fehler beim Speichern der Einstellungen.",
+    "loading": "Wird geladen...",
+    "restarting": "Server wird neu gestartet...",
+    "restartError": "Fehler beim Auslösen des Neustarts.",
+    "pinSet": "PIN wurde gesetzt.",
+    "pinSetError": "Fehler beim Setzen des PINs.",
+    "pinRemoved": "PIN-Schutz entfernt.",
+    "pinRemoveError": "Fehler beim Entfernen des PINs."
+  },
+  "pin": {
+    "title": "Admin-PIN-Schutz",
+    "status": "Status",
+    "noPin": "Kein PIN-Schutz aktiv. Jeder kann auf dieses Admin-Panel zugreifen.",
+    "pinActive": "PIN-Schutz ist aktiv.",
+    "setPinTitle": "Neuen PIN setzen",
+    "changePinTitle": "PIN ändern",
+    "newPin": "Neuer PIN (min. 4 Zeichen, alphanumerisch)",
+    "confirmPin": "PIN bestätigen",
+    "pinMismatch": "PINs stimmen nicht überein.",
+    "pinTooShort": "PIN muss mindestens 4 Zeichen lang sein.",
+    "pinInvalidChars": "PIN darf nur Buchstaben und Zahlen enthalten.",
+    "wrongPin": "Falscher PIN, bitte erneut versuchen.",
+    "loginTitle": "Admin-Anmeldung",
+    "loginPrompt": "Dieses Admin-Panel ist mit einem PIN geschützt.",
+    "enterPin": "PIN eingeben"
+  },
+  "system": {
+    "version": "Version",
+    "uptime": "Laufzeit",
+    "uptimeFormat": "{h}h {m}m {s}s",
+    "recentErrors": "Letzte Fehler",
+    "noErrors": "Keine Fehler aufgezeichnet.",
+    "restartConfirm": "Server wirklich neu starten? Die Diashow ist kurzzeitig nicht verfügbar.",
+    "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab."
+  },
+  "header": {
+    "title": "WallPanel Admin"
+  }
+}

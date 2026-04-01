@@ -4,6 +4,11 @@ const configService = require("../services/configService");
 const mediaScanner = require("../services/mediaScanner");
 const geocodeService = require("../services/geocodeService");
 const { version } = require("../../package.json");
+const crypto = require("crypto");
+
+// Einfaches Session-Flag fuer PIN-Authentifizierung (in-memory, reicht fuer lokalen Dienst)
+// Fuer persistente Sessions wuerde man express-session benoetigen
+const authenticatedSessions = new Set();
 
 const startTime = Date.now();
 const recentErrors = [];
@@ -76,6 +81,83 @@ router.get("/status", (req, res) => {
 router.post("/restart", (req, res) => {
   res.json({ ok: true, message: "Server wird neu gestartet..." });
   setTimeout(() => process.exit(0), 300);
+});
+
+// Hilfsfunktion: PIN hashen (SHA-256, ausreichend fuer Kinderschutz-Zweck)
+function hashPin(pin) {
+  return crypto.createHash("sha256").update(pin).digest("hex");
+}
+
+// GET /api/auth-status — prueft ob PIN aktiv und ob Session authentifiziert ist
+router.get("/auth-status", (req, res) => {
+  const config = configService.load();
+  const pinSet = !!config.admin_pin;
+  // Einfaches Session-Cookie-Konzept: IP + User-Agent als Session-Key
+  const sessionKey = (req.ip || "") + "|" + (req.headers["user-agent"] || "");
+  const isAuthenticated = authenticatedSessions.has(sessionKey);
+  res.json({
+    pinSet,
+    requiresPin: pinSet && !isAuthenticated
+  });
+});
+
+// POST /api/login — PIN ueberpruefen
+router.post("/login", express.json(), (req, res) => {
+  const config = configService.load();
+  if (!config.admin_pin) {
+    return res.json({ ok: true });
+  }
+  const { pin } = req.body || {};
+  if (!pin) return res.status(400).json({ error: "PIN fehlt" });
+  const hashed = hashPin(String(pin));
+  if (hashed !== config.admin_pin) {
+    return res.status(401).json({ error: "Falscher PIN" });
+  }
+  const sessionKey = (req.ip || "") + "|" + (req.headers["user-agent"] || "");
+  authenticatedSessions.add(sessionKey);
+  res.json({ ok: true });
+});
+
+// POST /api/logout
+router.post("/logout", (req, res) => {
+  const sessionKey = (req.ip || "") + "|" + (req.headers["user-agent"] || "");
+  authenticatedSessions.delete(sessionKey);
+  res.json({ ok: true });
+});
+
+// POST /api/set-pin — neuen PIN setzen (serverseitig gehasht)
+router.post("/set-pin", express.json(), (req, res) => {
+  const { pin } = req.body || {};
+  if (!pin || String(pin).length < 4) {
+    return res.status(400).json({ error: "PIN muss mindestens 4 Zeichen haben" });
+  }
+  if (!/^[a-zA-Z0-9]+$/.test(String(pin))) {
+    return res.status(400).json({ error: "PIN darf nur Buchstaben und Zahlen enthalten" });
+  }
+  try {
+    const config = configService.load();
+    config.admin_pin = hashPin(String(pin));
+    configService.save(config);
+    res.json({ ok: true });
+  } catch (err) {
+    logError("PIN-Setzen-Fehler: " + err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/remove-pin — PIN-Schutz entfernen
+router.post("/remove-pin", (req, res) => {
+  try {
+    const config = configService.load();
+    config.admin_pin = null;
+    configService.save(config);
+    // Alle Sessions invalidieren, da kein PIN mehr noetig
+    authenticatedSessions.clear();
+    res.json({ ok: true });
+  } catch (err) {
+    logError("PIN-Entfernen-Fehler: " + err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

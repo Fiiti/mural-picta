@@ -1,0 +1,158 @@
+{
+  "sections": {
+    "mediaSource": "Media Source",
+    "slideshow": "Slideshow Timing",
+    "kenBurns": "Ken Burns Effect",
+    "infoOverlay": "Image Info Overlay",
+    "video": "Video",
+    "display": "Display",
+    "filter": "Filter",
+    "debug": "Debug",
+    "security": "Security",
+    "system": "System & Status"
+  },
+  "fields": {
+    "media_base_path": {
+      "label": "Media base path",
+      "hint": "Absolute path to the folder containing images and videos. All subfolders up to 5 levels deep are included recursively."
+    },
+    "media_list_update_interval": {
+      "label": "Media list refresh interval",
+      "hint": "How often to rebuild the media list (in seconds, minimum 60). Especially important when using random order."
+    },
+    "media_order": {
+      "label": "Playback order",
+      "hint": "Determines the order in which images and videos are displayed.",
+      "options": {
+        "random": "Random",
+        "name": "By filename",
+        "date": "By date"
+      }
+    },
+    "display_time_image": {
+      "label": "Display time per image (seconds)",
+      "hint": "How many seconds each image is shown before transitioning to the next."
+    },
+    "display_time_video": {
+      "label": "Display time per video (seconds)",
+      "hint": "How many seconds each video is shown. If the video is shorter, it will loop until this time is reached."
+    },
+    "crossfade_time": {
+      "label": "Crossfade duration (seconds)",
+      "hint": "Duration of the crossfade transition between media items. Set to 0 to disable crossfade."
+    },
+    "image_fit": {
+      "label": "Image fit mode",
+      "hint": "How images are scaled to fill the screen.",
+      "options": {
+        "cover": "Cover (fill screen, may crop edges)",
+        "contain": "Contain (show full image, may show black bars)"
+      }
+    },
+    "ken_burns_enabled": {
+      "label": "Enable Ken Burns effect",
+      "hint": "Slowly pans and zooms images and videos for a cinematic effect."
+    },
+    "ken_burns_zoom": {
+      "label": "Ken Burns zoom factor",
+      "hint": "Maximum zoom level during the Ken Burns effect (e.g. 1.3 = 130% of original size). Range: 1.0 – 2.0."
+    },
+    "video_volume": {
+      "label": "Video volume",
+      "hint": "Playback volume for videos. 0 = muted, 1 = full volume."
+    },
+    "video_loop": {
+      "label": "Loop videos",
+      "hint": "If enabled, videos will loop until the configured display time is reached."
+    },
+    "show_progress_bar": {
+      "label": "Show progress bar",
+      "hint": "Displays a thin progress line at the bottom of the screen indicating the remaining display time."
+    },
+    "show_image_info": {
+      "label": "Show info overlay",
+      "hint": "Displays image metadata (filename, date, location) as an overlay on the slideshow."
+    },
+    "image_info_template": {
+      "label": "Info overlay template",
+      "hint": "HTML template for the info overlay. Use template variables like ${filename}, ${DateTimeOriginal}, ${address.city} to insert metadata. Click the help button for full reference."
+    },
+    "info_position": {
+      "label": "Overlay position",
+      "hint": "Where on the screen the info overlay is displayed.",
+      "options": {
+        "bottom-right": "Bottom right",
+        "bottom-left": "Bottom left",
+        "top-right": "Top right",
+        "top-left": "Top left"
+      }
+    },
+    "fetch_address_data": {
+      "label": "Fetch location from GPS",
+      "hint": "Reverse-geocodes GPS coordinates from image EXIF data using the Nominatim API (OpenStreetMap). Requires an internet connection."
+    },
+    "exclude_filenames": {
+      "label": "Exclude filenames",
+      "hint": "Files matching any of these patterns will be excluded from the slideshow. Supports exact filenames or regular expressions. Press Enter or comma to add."
+    },
+    "debug_mode": {
+      "label": "Enable debug mode",
+      "hint": "Shows a debug overlay with EXIF metadata, GPS coordinates, resolved address data, and version information."
+    },
+    "admin_pin": {
+      "label": "Admin PIN protection",
+      "hint": "Protect the admin panel with an alphanumeric PIN (minimum 4 characters). Leave empty to disable protection."
+    }
+  },
+  "buttons": {
+    "save": "Save Settings",
+    "reload": "Reload Slideshow",
+    "restart": "Restart Server",
+    "openHelp": "? Template Help",
+    "setPin": "Set PIN",
+    "changePin": "Change PIN",
+    "removePin": "Remove PIN Protection",
+    "close": "Close",
+    "login": "Login"
+  },
+  "status": {
+    "saved": "Settings saved successfully.",
+    "saveError": "Error saving settings.",
+    "loading": "Loading...",
+    "restarting": "Server is restarting...",
+    "restartError": "Error triggering restart.",
+    "pinSet": "PIN has been set.",
+    "pinSetError": "Error setting PIN.",
+    "pinRemoved": "PIN protection removed.",
+    "pinRemoveError": "Error removing PIN."
+  },
+  "pin": {
+    "title": "Admin PIN Protection",
+    "status": "Status",
+    "noPin": "No PIN protection active. Anyone can access this admin panel.",
+    "pinActive": "PIN protection is active.",
+    "setPinTitle": "Set new PIN",
+    "changePinTitle": "Change PIN",
+    "newPin": "New PIN (min. 4 characters, alphanumeric)",
+    "confirmPin": "Confirm PIN",
+    "pinMismatch": "PINs do not match.",
+    "pinTooShort": "PIN must be at least 4 characters.",
+    "pinInvalidChars": "PIN may only contain letters and numbers.",
+    "wrongPin": "Wrong PIN, please try again.",
+    "loginTitle": "Admin Login",
+    "loginPrompt": "This admin panel is protected with a PIN.",
+    "enterPin": "Enter PIN"
+  },
+  "system": {
+    "version": "Version",
+    "uptime": "Uptime",
+    "uptimeFormat": "{h}h {m}m {s}s",
+    "recentErrors": "Recent Errors",
+    "noErrors": "No errors recorded.",
+    "restartConfirm": "Are you sure you want to restart the server? The slideshow will be briefly unavailable.",
+    "reloadNote": "Opens the slideshow in a new browser tab."
+  },
+  "header": {
+    "title": "WallPanel Admin"
+  }
+}
