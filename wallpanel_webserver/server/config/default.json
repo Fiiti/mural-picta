@@ -1,0 +1,19 @@
+{
+  "media_base_path": "/media/photos",
+  "media_list_update_interval": 600,
+  "media_order": "random",
+  "display_time_image": 15,
+  "display_time_video": 15,
+  "crossfade_time": 3,
+  "ken_burns_enabled": true,
+  "ken_burns_zoom": 1.3,
+  "image_fit": "cover",
+  "show_progress_bar": true,
+  "show_image_info": false,
+  "image_info_template": "${DateTimeOriginal}",
+  "fetch_address_data": false,
+  "exclude_filenames": [],
+  "video_loop": false,
+  "video_volume": 0,
+  "admin_pin": null
+}

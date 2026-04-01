@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WallPanel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Medien-Slots für Crossfade -->
+    <div id="slot-a" class="media-slot"></div>
+    <div id="slot-b" class="media-slot"></div>
+
+    <!-- Info-Overlay (Template-Inhalt wird per JS gesetzt) -->
+    <div id="info-overlay" class="pos-bottom-right"></div>
+
+    <!-- Fortschrittsbalken -->
+    <div id="progress-bar"></div>
+
+    <!-- Ladebildschirm -->
+    <div id="loading">Lädt Medienliste...</div>
+  </div>
+
+  <script src="kenburns.js"></script>
+  <script src="slideshow.js"></script>
+</body>
+</html>
