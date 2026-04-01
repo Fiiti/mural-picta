@@ -164,12 +164,18 @@ function loadMediaIntoSlot(slotEl, item, onReady) {
 }
 
 // ── Fortschrittsbalken ────────────────────────────────────────────────────────
+// Transition statt CSS-Animation: sofort auf 0% setzen (ohne Übergang),
+// dann Übergangs-Dauer setzen und auf 100% fahren.
 function restartProgressBar(item) {
-  progressBar.style.animation = "none";
-  // Reflow erzwingen
-  void progressBar.offsetWidth;
   const seconds = getDisplayTimeMs(item) / 1000;
-  progressBar.style.animation = `progressAdvance ${seconds}s linear forwards`;
+  // Schritt 1: Transition deaktivieren und auf 0 zurücksetzen
+  progressBar.style.transition = "none";
+  progressBar.style.width = "0%";
+  // Schritt 2: Reflow erzwingen, damit der Browser den Reset verarbeitet
+  void progressBar.offsetWidth;
+  // Schritt 3: Transition aktivieren und auf 100% fahren
+  progressBar.style.transition = `width ${seconds}s linear`;
+  progressBar.style.width = "100%";
 }
 
 // ── Ladebildschirm ────────────────────────────────────────────────────────────
@@ -202,7 +208,10 @@ document.addEventListener("click", (e) => {
       showNextMedia();
     } else {
       if (displayTimer) clearTimeout(displayTimer);
-      progressBar.style.animationPlayState = "paused";
+      // Transition einfrieren: aktuelle Breite festhalten
+      const currentWidth = getComputedStyle(progressBar).width;
+      progressBar.style.transition = "none";
+      progressBar.style.width = currentWidth;
     }
   }
 });

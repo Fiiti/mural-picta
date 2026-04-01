@@ -1,9 +1,16 @@
 /**
  * Ken Burns Effekt
- * Wählt zufällig eine der 5 Animations-Varianten und startet sie auf dem Element.
+ * transform-origin wird per JS auf das Element gesetzt (NICHT in @keyframes),
+ * da transform-origin in keyframes browserübergreifend unzuverlässig ist.
  */
 
-const KB_ANIMATIONS = ["kenBurns-tl", "kenBurns-tr", "kenBurns-bl", "kenBurns-br", "kenBurns-center"];
+const KB_ORIGINS = [
+  "top left",
+  "top right",
+  "bottom left",
+  "bottom right",
+  "center",
+];
 
 /**
  * Startet den Ken Burns Effekt auf einem Medienelement.
@@ -12,14 +19,18 @@ const KB_ANIMATIONS = ["kenBurns-tl", "kenBurns-tr", "kenBurns-bl", "kenBurns-br
  * @param {number}      duration - Animationsdauer in Sekunden
  */
 function startKenBurns(element, zoom, duration) {
-  // Zuerst Animation zurücksetzen (nötig, damit sie neu startet)
+  // Animation zuerst vollständig stoppen
   element.style.animation = "none";
+  element.style.transform = "scale(1)";
   element.style.setProperty("--kb-zoom", zoom);
 
-  // Kurzer Timeout, damit der Browser das "none" tatsächlich verarbeitet
+  // transform-origin direkt am Element setzen – zuverlässiger als in @keyframes
+  const origin = KB_ORIGINS[Math.floor(Math.random() * KB_ORIGINS.length)];
+  element.style.transformOrigin = origin;
+
+  // Kurzer Timeout, damit der Browser den Reset verarbeitet (Reflow)
   setTimeout(() => {
-    const name = KB_ANIMATIONS[Math.floor(Math.random() * KB_ANIMATIONS.length)];
-    element.style.animation = `${name} ${duration}s linear forwards`;
+    element.style.animation = `kenBurns ${duration}s linear forwards`;
   }, 30);
 }
 
@@ -29,4 +40,6 @@ function startKenBurns(element, zoom, duration) {
  */
 function stopKenBurns(element) {
   element.style.animation = "none";
+  element.style.transform = "";
+  element.style.transformOrigin = "";
 }
