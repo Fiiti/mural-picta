@@ -1,8 +1,14 @@
 # WallPanel Server – Projektkontext für Claude
 
+## Tooling
+- Für Browser-Automatisierung im Projekt: `npx @playwright/cli` verwenden (installiert als `@playwright/cli`)
+- KEIN eigenes Playwright-Script schreiben, solange `@playwright/cli` ausreicht
+- Browser IMMER mit `--headed` öffnen, damit der User den Browser live sieht. Beispiel: `npx @playwright/cli open --headed https://...`
+- `@playwright/cli` läuft standardmäßig headless (unsichtbar) – `--headed` ist PFLICHT für sichtbare Fenster
+
 ## Projektübersicht
 
-**Ziel:** Eine eigenständige Web-Server-Lösung als Bild- und Video-Diashow für Wandpanels/Tablets – vollständig unabhängig von Home Assistant. Es soll quasi die bestehende Lösung der Home Assistant HACS Erweiterung im Ordner `dev_basis/lovelace-wallpanel-main/` so nachzubauen, dass es ohne Home Assistant läuft und nur die Video-Bilder Diashow mit allen dazu zugehörigen Unterdiensten (GPS zu Ortnamen Anzeige, Datumanzeige, Ken-Burns Effekt) unabhängig läuft. Sämtliche dort verwendeten Dienste haben sich als sehr gut bisher bewiesen. Außer beim Dienst der GPS zu Ortsnamen Ermittlung - hier sind robuste kostenlose alternative mir vorzuschlagen und dann zu verwenden. 
+**Ziel:** Eine eigenständige Web-Server-Lösung als Bild- und Video-Diashow für Wandpanels/Tablets. Es soll quasi die bestehende Lösung der Home Assistant HACS Erweiterung im Ordner `dev_basis/lovelace-wallpanel-main/` so nachzubauen, dass es vollständig unabhängig und ohne Home Assistant läuft und nur die Video-Bilder Diashow mit allen dazu zugehörigen Unterdiensten (GPS zu Ortnamen Anzeige, Datumanzeige, Ken-Burns Effekt). Sämtliche dort verwendeten Dienste haben sich als sehr gut bisher bewiesen. Außer beim Dienst der GPS zu Ortsnamen Ermittlung - hier sind robuste kostenlose alternative mir vorzuschlagen und dann zu verwenden. 
 
 Die Anwendung besteht aus zwei Teilen:
 1. **Diashow-Frontend** – läuft im Browser des Wandpanels (Vollbild, keine Navigation)
