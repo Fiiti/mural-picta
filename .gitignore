@@ -41,3 +41,12 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # WallPanel: benutzerspezifische Konfiguration (nicht versionieren)
 wallpanel_webserver/config/config.json
+
+# Lokale Medienordner (Testbilder, NAS-Mounts, Jahresordner)
+medien/
+media/
+fotos/
+photos/
+bilder/
+videos/
+20[0-9][0-9]/
