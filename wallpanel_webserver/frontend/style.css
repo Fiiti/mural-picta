@@ -72,25 +72,51 @@ html, body {
   /* Position per JS-Klasse steuerbar */
 }
 
-#info-overlay.pos-bottom-right {
-  bottom: 1em;
-  right: 1em;
-  text-align: right;
-}
+/* Alle Positionen spannen die volle Breite auf.
+   text-align im Template-HTML steuert die Ausrichtung. */
+#info-overlay.pos-bottom-right,
 #info-overlay.pos-bottom-left {
   bottom: 1em;
   left: 1em;
-  text-align: left;
-}
-#info-overlay.pos-top-right {
-  top: 1em;
   right: 1em;
-  text-align: right;
 }
+#info-overlay.pos-top-right,
 #info-overlay.pos-top-left {
   top: 1em;
   left: 1em;
-  text-align: left;
+  right: 1em;
+}
+#info-overlay.pos-bottom-right,
+#info-overlay.pos-top-right  { text-align: right; }
+#info-overlay.pos-bottom-left,
+#info-overlay.pos-top-left   { text-align: left; }
+
+/* ── Debug-Overlay ────────────────────────────────────────── */
+#debug-overlay {
+  position: fixed;
+  top: 0.5em;
+  left: 0.5em;
+  z-index: 300;
+  pointer-events: none;
+  font-size: 14px;
+  font-family: monospace;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5em 0.75em;
+  border-radius: 6px;
+}
+#debug-overlay table { border-collapse: collapse; }
+#debug-overlay td { vertical-align: top; padding: 0; white-space: pre-wrap; }
+#debug-overlay td:first-child { opacity: 0.65; padding-right: 0.3em; }
+
+/* ── Info-Overlay Inhalt ──────────────────────────────────── */
+#info-overlay {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85em;
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.5s ease;
 }
 
 /* ── Lademeldung ──────────────────────────────────────────── */

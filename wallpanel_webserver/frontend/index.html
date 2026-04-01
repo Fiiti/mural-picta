@@ -18,10 +18,17 @@
     <!-- Fortschrittsbalken -->
     <div id="progress-bar"></div>
 
+    <!-- Debug-Overlay (nur wenn debug_mode aktiv) -->
+    <div id="debug-overlay" style="display:none"></div>
+
     <!-- Ladebildschirm -->
     <div id="loading">Lädt Medienliste...</div>
   </div>
 
+  <!-- exifr: EXIF-Auslesen inkl. GPS (lokal aus node_modules, UMD stellt window.exifr bereit) -->
+  <script src="/vendor/exifr.js"></script>
+  <script src="template.js"></script>
+  <script src="exif.js"></script>
   <script src="kenburns.js"></script>
   <script src="slideshow.js"></script>
 </body>

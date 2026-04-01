@@ -12,18 +12,27 @@ let displayTimer = null;
 let progressBarTimer = null;
 let mediaListRefreshTimer = null;
 let isPaused = false;
+let appVersion = "";
 
 // ── DOM-Referenzen ────────────────────────────────────────────────────────────
 const slotA = document.getElementById("slot-a");
 const slotB = document.getElementById("slot-b");
 const progressBar = document.getElementById("progress-bar");
 const infoOverlay = document.getElementById("info-overlay");
+const debugOverlay = document.getElementById("debug-overlay");
 const loadingScreen = document.getElementById("loading");
 
 // ── Initialisierung ───────────────────────────────────────────────────────────
 async function init() {
   try {
     config = await fetchConfig();
+
+    // App-Version einmalig laden
+    try {
+      const statusRes = await fetch("/api/status");
+      if (statusRes.ok) appVersion = (await statusRes.json()).version || "";
+    } catch {}
+
     applyCssVariables();
 
     // Query-Parameter auswerten: ?media_path=2026/Sommer
@@ -102,6 +111,9 @@ function showNextMedia(isFirst = false) {
     inactiveEl.classList.add("active");
     activeSlot = inactiveSlot;
 
+    // Overlays aktualisieren (Info + Debug teilen einen getMediaInfo-Aufruf)
+    loadAndDisplayOverlays(item);
+
     // Ken Burns starten
     if (config.ken_burns_enabled && item.type === "image") {
       const mediaEl = inactiveEl.querySelector("img, video");
@@ -129,6 +141,71 @@ function showNextMedia(isFirst = false) {
       displayTimer = setTimeout(() => showNextMedia(), displayMs);
     }
   });
+}
+
+// ── Overlays (Info + Debug) ───────────────────────────────────────────────────
+async function loadAndDisplayOverlays(item) {
+  const needsInfo = (config.show_image_info && config.image_info_template) || config.debug_mode;
+
+  infoOverlay.style.opacity = "0";
+  if (debugOverlay) debugOverlay.style.display = "none";
+
+  if (!needsInfo) {
+    infoOverlay.innerHTML = "";
+    return;
+  }
+
+  try {
+    const mediaInfo = await getMediaInfo(item, config.fetch_address_data || false);
+
+    // Info-Overlay
+    if (config.show_image_info && config.image_info_template) {
+      const html = renderTemplate(config.image_info_template, mediaInfo);
+      infoOverlay.innerHTML = html;
+      if (html.trim()) infoOverlay.style.opacity = "1";
+    } else {
+      infoOverlay.innerHTML = "";
+    }
+
+    // Debug-Overlay
+    if (config.debug_mode && debugOverlay) {
+      debugOverlay.innerHTML = buildDebugHtml(item, mediaInfo);
+      debugOverlay.style.display = "block";
+    }
+  } catch (e) {
+    console.warn("Overlay-Fehler:", e);
+  }
+}
+
+function buildDebugHtml(item, mediaInfo) {
+  const row = (label, val) =>
+    val != null && val !== "" && val !== "-"
+      ? `<tr><td>${label}&nbsp;</td><td>${val}</td></tr>`
+      : "";
+
+  const addrRows = mediaInfo.address
+    ? ["country","state","county","municipality","city","town","village","road","postcode"]
+        .filter(k => mediaInfo.address[k])
+        .map(k => row(`addr.${k}`, mediaInfo.address[k]))
+        .join("")
+    : row("addr", "-");
+
+  return `<table>
+    ${row("WallPanel", `v${appVersion}`)}
+    ${row("Datei", mediaInfo.filename || item.filename)}
+    ${row("Pfad", mediaInfo.relativePath || item.relativePath || "-")}
+    ${row("Typ", item.type)}
+    ${mediaInfo.latitude != null
+      ? row("GPS", `${mediaInfo.latitude.toFixed(5)}, ${mediaInfo.longitude.toFixed(5)}`)
+      : row("GPS", "–")}
+    ${mediaInfo.DateTimeOriginal
+      ? row("Datum", mediaInfo.DateTimeOriginal instanceof Date
+          ? mediaInfo.DateTimeOriginal.toLocaleString()
+          : mediaInfo.DateTimeOriginal)
+      : ""}
+    ${mediaInfo.Make  ? row("Kamera", [mediaInfo.Make, mediaInfo.Model].filter(Boolean).join(" ")) : ""}
+    ${addrRows}
+  </table>`;
 }
 
 function getDisplayTimeMs(item) {

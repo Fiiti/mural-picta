@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const configService = require("../services/configService");
 const mediaScanner = require("../services/mediaScanner");
+const geocodeService = require("../services/geocodeService");
 const { version } = require("../../package.json");
 
 const startTime = Date.now();
@@ -41,6 +42,22 @@ router.get("/media/list", (req, res) => {
     res.json(list);
   } catch (err) {
     logError("Media-Scan-Fehler: " + err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/geocode?lat=X&lon=Y
+router.get("/geocode", async (req, res) => {
+  const lat = parseFloat(req.query.lat);
+  const lon = parseFloat(req.query.lon);
+  if (isNaN(lat) || isNaN(lon)) {
+    return res.status(400).json({ error: "lat/lon fehlt oder ungültig" });
+  }
+  try {
+    const result = await geocodeService.reverseGeocode(lat, lon);
+    res.json(result || {});
+  } catch (err) {
+    logError("Geocode-Fehler: " + err.message);
     res.status(500).json({ error: err.message });
   }
 });

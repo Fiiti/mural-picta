@@ -16,6 +16,12 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 // Admin-Oberfläche unter /admin
 app.use("/admin", express.static(path.join(__dirname, "../admin")));
 
+// Vendor-Bibliotheken aus node_modules mit korrektem Content-Type
+app.get("/vendor/exifr.js", (req, res) => {
+  res.setHeader("Content-Type", "application/javascript; charset=utf-8");
+  res.sendFile(path.join(__dirname, "../node_modules/exifr/dist/full.umd.js"));
+});
+
 // API-Routen
 app.use("/api", apiRouter);
 

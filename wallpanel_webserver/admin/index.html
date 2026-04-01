@@ -26,7 +26,7 @@
     h2 { font-size: 1rem; color: #a0c4ff; margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .field { margin-bottom: 1rem; }
     label { display: block; font-size: 0.82rem; color: #aaa; margin-bottom: 0.3rem; }
-    input[type="text"], input[type="number"], select {
+    input[type="text"], input[type="number"], select, textarea {
       width: 100%;
       background: #0d1b2a;
       border: 1px solid #0f3460;
@@ -35,8 +35,10 @@
       padding: 0.5rem 0.75rem;
       font-size: 0.95rem;
       outline: none;
+      font-family: inherit;
     }
-    input:focus, select:focus { border-color: #a0c4ff; }
+    input:focus, select:focus, textarea:focus { border-color: #a0c4ff; }
+    textarea { resize: vertical; min-height: 5rem; line-height: 1.4; font-family: monospace; }
     .toggle-row {
       display: flex;
       align-items: center;
@@ -160,6 +162,50 @@
     </div>
   </div>
 
+  <!-- Image Info Overlay -->
+  <div class="card">
+    <h2>Image Info Overlay</h2>
+    <div class="field toggle-row">
+      <label for="show_image_info">Show info overlay</label>
+      <input type="checkbox" id="show_image_info">
+    </div>
+    <div class="field">
+      <label>Info position</label>
+      <select id="info_position">
+        <option value="bottom-right">Bottom right</option>
+        <option value="bottom-left">Bottom left</option>
+        <option value="top-right">Top right</option>
+        <option value="top-left">Top left</option>
+      </select>
+    </div>
+    <div class="field toggle-row">
+      <label for="fetch_address_data">Fetch location name from GPS (Nominatim)</label>
+      <input type="checkbox" id="fetch_address_data">
+    </div>
+    <div class="field">
+      <label>Info template (HTML with <code style="font-size:0.85em">${variable}</code> placeholders)</label>
+      <textarea id="image_info_template" rows="5" placeholder="${DateTimeOriginal}"></textarea>
+      <p class="hint">
+        Full HTML supported. Available variables: <code>filename</code>, <code>DateTimeOriginal</code>, <code>Make</code>, <code>Model</code>,
+        <code>address.country</code>, <code>address.state</code>, <code>address.town</code>, <code>address.city</code>, <code>address.municipality</code>, <code>address.county</code>.<br>
+        Fallback chain: <code>${address.town|address.city}</code> &nbsp;|&nbsp;
+        Prefix/suffix: <code>${address.state!suffix= - }</code> &nbsp;|&nbsp;
+        Date options: <code>${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}</code><br><br>
+        Example (like the original lovelace-wallpanel):
+        <pre style="font-size:0.72em; color:#a0c4ff; margin-top:0.3rem; white-space:pre-wrap;">&lt;div style="text-align:right; font-size:7vh; font-weight:900; color:#ffff00; text-shadow:0px 0px 1px rgba(0,0,0,1); -webkit-text-stroke:3px black;"&gt;${address.country!suffix=&lt;br&gt;}${address.state!suffix= - }${address.town|address.city|address.municipality|address.county!suffix= - }${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}&lt;/div&gt;</pre>
+      </p>
+    </div>
+  </div>
+
+  <!-- Debug -->
+  <div class="card">
+    <h2>Debug</h2>
+    <div class="field toggle-row">
+      <label for="debug_mode">Show debug overlay (top-left, EXIF + GPS + address + version)</label>
+      <input type="checkbox" id="debug_mode">
+    </div>
+  </div>
+
   <!-- Actions -->
   <div class="actions">
     <button id="btn-save">Save Settings</button>
@@ -174,9 +220,11 @@
       "display_time_image", "display_time_video", "crossfade_time", "image_fit",
       "ken_burns_enabled", "ken_burns_zoom",
       "video_volume", "video_loop",
-      "show_progress_bar"
+      "show_progress_bar",
+      "show_image_info", "image_info_template", "fetch_address_data", "info_position",
+      "debug_mode"
     ];
-    const checkboxFields = new Set(["ken_burns_enabled", "video_loop", "show_progress_bar"]);
+    const checkboxFields = new Set(["ken_burns_enabled", "video_loop", "show_progress_bar", "show_image_info", "fetch_address_data", "debug_mode"]);
 
     function setStatus(msg, isError = false) {
       const el = document.getElementById("status-msg");
