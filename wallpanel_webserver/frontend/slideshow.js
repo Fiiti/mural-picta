@@ -167,7 +167,9 @@ function loadMediaIntoSlot(slotEl, item, onReady) {
 // Transition statt CSS-Animation: sofort auf 0% setzen (ohne Übergang),
 // dann Übergangs-Dauer setzen und auf 100% fahren.
 function restartProgressBar(item) {
-  const seconds = getDisplayTimeMs(item) / 1000;
+  // Gesamtdauer = Anzeigezeit + Überblendzeit, damit der Balken genau dann
+  // bei 100% ankommt, wenn das neue Bild vollständig eingeblendet ist.
+  const seconds = getDisplayTimeMs(item) / 1000 + (config.crossfade_time || 3);
   // Schritt 1: Transition deaktivieren und auf 0 zurücksetzen
   progressBar.style.transition = "none";
   progressBar.style.width = "0%";
