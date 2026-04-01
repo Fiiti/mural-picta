@@ -172,8 +172,8 @@ siehe Beschreibungen weiter oben
 ## Entwicklungshinweise
 keine
 
-**Projekt Arbeitsverzeichnis:** `~/claude-projekte/wallpanel_server/`
-**Coding-Basisverzeichnis:** `~/claude-projekte/wallpanel_server/wallpanel_webserver`
+**Projekt Arbeitsverzeichnis:** `wallpanel_server/`
+**Coding-Basisverzeichnis:** `wallpanel_server/wallpanel_webserver`
 
 **Wichtig:**
 - `dev_basis/` ist **nur Referenz** – niemals Dateien darin verändern
