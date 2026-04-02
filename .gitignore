@@ -41,6 +41,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Projektspezifisch: nicht im öffentlichen Repo
 CLAUDE.md
+lokal_admin.md
 dev_basis/
 wallpanel_server_*.jpg
 
