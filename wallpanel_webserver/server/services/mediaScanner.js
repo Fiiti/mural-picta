@@ -94,4 +94,26 @@ function scan(basePath, subPath, config) {
   return results;
 }
 
-module.exports = { scan };
+// In-Memory-Fallback für den letzten erfolgreichen Scan
+let _lastSuccessfulCache = null; // { key, results, ts }
+
+/**
+ * Wie scan(), aber bei Fehler wird der letzte bekannte Stand zurückgegeben.
+ * Path-Traversal-Fehler werden weiterhin geworfen (kein Fallback).
+ */
+function scanWithFallback(basePath, subPath, config) {
+  const key = basePath + "|" + (subPath || "");
+  try {
+    const results = scan(basePath, subPath, config);
+    _lastSuccessfulCache = { key, results, ts: Date.now() };
+    return results;
+  } catch (err) {
+    if (err.message && err.message.includes("Path-Traversal")) throw err;
+    if (global.wallpanelLogError)
+      global.wallpanelLogError("Scan fehlgeschlagen (Fallback aktiv): " + err.message);
+    console.error("[mediaScanner] Scan-Fehler:", err.message);
+    return _lastSuccessfulCache?.key === key ? _lastSuccessfulCache.results : [];
+  }
+}
+
+module.exports = { scan, scanWithFallback };

@@ -1,0 +1,74 @@
+# MuralPicta WallPanel Server – Docker Compose
+# Dokumentation: https://github.com/TBD/mural-picta
+#
+# SCHNELLSTART:
+#   1. Kopiere .env.example zu .env und passe MEDIA_PATH an
+#   2. docker compose up -d
+#   3. Admin-Oberfläche: http://localhost:3000/admin
+
+services:
+  wallpanel:
+    # --- Image-Quelle ---
+    # Option A: Lokal aus dem Quellcode bauen (für Entwickler)
+    build:
+      context: ..            # = wallpanel_webserver/ (ein Verzeichnis oberhalb)
+      dockerfile: docker/Dockerfile
+
+    # Option B: Fertiges Image von Docker Hub verwenden (für Endnutzer)
+    # Einfach Option A auskommentieren und diese Zeile einkommentieren:
+    # image: galseq/mural-picta:latest
+
+    container_name: muralpicta
+    restart: unless-stopped
+
+    ports:
+      # HOST_PORT:CONTAINER_PORT
+      # Ändere die linke Seite, wenn Port 3000 bereits belegt ist (z. B. "8080:3000")
+      - "${PORT:-3000}:3000"
+
+    volumes:
+      # --- Konfiguration (MUSS read-write sein, Admin speichert hier) ---
+      - wallpanel_config:/app/config
+      # Alternativ als Bind-Mount (direkter Dateizugriff auf dem Host):
+      # - ./config:/app/config
+
+      # -------------------------------------------------------
+      # MEDIENORDNER – wähle das passende Beispiel und passe an:
+      # -------------------------------------------------------
+
+      # Einfach: Ein einzelner Ordner (empfohlen für den Einstieg)
+      # Setze MEDIA_PATH in der .env-Datei oder direkt hier:
+      - ${MEDIA_PATH:-/path/to/your/media}:/data/media:ro
+
+      # Mehrere Jahres-Ordner parallel (alle unter /data/media sichtbar):
+      # - /volume1/2024:/data/media/2024:ro
+      # - /volume1/2025:/data/media/2025:ro
+      # - /volume1/2026:/data/media/2026:ro
+
+      # Fotos und Videos getrennt:
+      # - /volume1/photos:/data/media/photos:ro
+      # - /volume2/videos:/data/media/videos:ro
+
+      # Synology Beispiel (NAS-Freigabe bereits auf Synology gemountet):
+      # - /volume1/medien:/data/media:ro
+
+      # Nach dem Starten in Admin unter "Media Source" eintragen:
+      #   media_base_path = /data/media
+      # Der Scanner findet dann rekursiv alles darunter.
+      # -------------------------------------------------------
+
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+# Named Volume für die Konfiguration.
+# Die Konfiguration bleibt erhalten, auch wenn der Container neu erstellt wird.
+volumes:
+  wallpanel_config:

@@ -1,0 +1,10 @@
+node_modules
+admin/node_modules
+admin/dist
+config/config.json
+config/geocode_cache.json
+*.log
+.env
+.env.*
+.git
+docker

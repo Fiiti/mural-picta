@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
+const path = require("path");
 const configService = require("../services/configService");
 const mediaScanner = require("../services/mediaScanner");
 const geocodeService = require("../services/geocodeService");
@@ -43,11 +45,34 @@ router.get("/media/list", (req, res) => {
   const config = configService.load();
   const subPath = req.query.subpath || "";
   try {
-    const list = mediaScanner.scan(config.media_base_path, subPath, config);
+    const isCached = !fs.existsSync(config.media_base_path);
+    const list = mediaScanner.scanWithFallback(config.media_base_path, subPath, config);
+    if (isCached) res.set("X-Media-From-Cache", "true");
     res.json(list);
   } catch (err) {
     logError("Media-Scan-Fehler: " + err.message);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/media-source/test — interaktiver Verbindungstest, kein Produktionsfehler
+router.get("/media-source/test", (req, res) => {
+  const config = configService.load();
+  const testPath = req.query.path || config.media_base_path;
+  if (path.normalize(testPath).includes("..")) {
+    return res.json({ ok: false, error: "Ungültiger Pfad" });
+  }
+  if (!fs.existsSync(testPath) || !fs.statSync(testPath).isDirectory()) {
+    return res.json({ ok: false, error: "Pfad existiert nicht oder ist kein Verzeichnis", path: testPath });
+  }
+  const t0 = Date.now();
+  try {
+    const list = mediaScanner.scan(testPath, "", config);
+    const images = list.filter((f) => f.type === "image").length;
+    const videos = list.filter((f) => f.type === "video").length;
+    res.json({ ok: true, path: testPath, fileCount: list.length, imageCount: images, videoCount: videos, responseTimeMs: Date.now() - t0 });
+  } catch (err) {
+    res.json({ ok: false, error: err.message });
   }
 });
 

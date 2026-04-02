@@ -43,6 +43,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 wallpanel_webserver/config/config.json
 wallpanel_webserver/config/geocode_cache.json
 
+# Docker: lokale Umgebungsvariablen (nicht versionieren, enthält Pfade)
+wallpanel_webserver/docker/.env
+
 # Lokale Medienordner (Testbilder, NAS-Mounts, Jahresordner)
 medien/
 media/

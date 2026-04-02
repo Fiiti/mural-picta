@@ -63,3 +63,18 @@ export async function removePin() {
   const res = await fetch('/api/remove-pin', { method: 'POST' })
   return res.ok
 }
+
+export async function testMediaSource(mediaPath) {
+  const params = mediaPath ? `?path=${encodeURIComponent(mediaPath)}` : ''
+  const res = await fetch(`/api/media-source/test${params}`)
+  if (!res.ok) throw new Error('Verbindungstest fehlgeschlagen')
+  return res.json()
+}
+
+export async function getMediaCount(subpath = '') {
+  const params = subpath ? `?subpath=${encodeURIComponent(subpath)}` : ''
+  const res = await fetch(`/api/media/list${params}`)
+  if (!res.ok) return 0
+  const data = await res.json()
+  return Array.isArray(data) ? data.length : 0
+}

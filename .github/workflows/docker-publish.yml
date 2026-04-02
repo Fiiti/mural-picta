@@ -1,0 +1,69 @@
+# MuralPicta – Docker Build & Push zu Docker Hub
+#
+# Trigger:
+#   - Push auf den main-Branch  → Image-Tag: "latest"
+#   - Git-Tag v* (z. B. v1.0.0) → Image-Tag: Versionsnummer + "latest"
+#
+# Voraussetzungen (einmalig in GitHub einrichten):
+#   Repository → Settings → Secrets and variables → Actions → New repository secret
+#   - DOCKERHUB_USERNAME  = dein Docker Hub Benutzername
+#   - DOCKERHUB_TOKEN     = Docker Hub Access Token (hub.docker.com → Account → Security)
+#
+# Das fertige Image ist dann verfügbar als:
+#   docker pull DOCKERHUB_USERNAME/mural-picta:latest
+
+name: Docker Build & Push
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      # Buildx aktivieren: ermöglicht Multi-Arch-Builds (amd64 + arm64)
+      - name: Docker Buildx einrichten
+        uses: docker/setup-buildx-action@v3
+
+      # Bei Docker Hub anmelden (Zugangsdaten aus GitHub Secrets)
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Image-Tags automatisch aus Branch/Tag ableiten
+      # main-Branch    → latest
+      # Tag v1.2.3     → 1.2.3, latest
+      - name: Image-Tags und Labels bestimmen
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: galseq/mural-picta
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # Build und Push – für Intel/AMD (amd64) und ARM (arm64, z. B. Synology, Raspberry Pi)
+      - name: Build & Push (linux/amd64 + linux/arm64)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./wallpanel_webserver
+          file: ./wallpanel_webserver/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # GitHub Actions Cache nutzen → deutlich schnellere Folge-Builds
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -40,16 +40,83 @@
       </select>
       <p class="hint">{{ $t('fields.media_order.hint') }}</p>
     </div>
+
+    <!-- Block A: Connection Test -->
+    <div class="field">
+      <label>Connection Test</label>
+      <div class="test-row">
+        <button class="btn-test" :disabled="testLoading" @click="runTest">
+          {{ testLoading ? 'Testing…' : 'Test Connection' }}
+        </button>
+        <span v-if="testResult" :class="['test-result', testResult.ok ? 'ok' : 'err']">
+          <template v-if="testResult.ok">
+            ✓ {{ testResult.fileCount }} files ({{ testResult.imageCount }} images, {{ testResult.videoCount }} videos) — {{ testResult.responseTimeMs }}ms
+          </template>
+          <template v-else>
+            ✗ {{ testResult.error }}
+          </template>
+        </span>
+      </div>
+    </div>
+
+    <!-- Block B: Indexed Files -->
+    <div class="field">
+      <label>Currently Indexed Files</label>
+      <div class="test-row">
+        <span class="count-badge">{{ mediaCount !== null ? mediaCount + ' files' : '–' }}</span>
+        <button class="btn-refresh" @click="loadCount">↻ Refresh</button>
+      </div>
+      <p class="hint">Number of media files currently available from the configured path.</p>
+    </div>
+
+    <!-- Block C: Volume Mapping Info -->
+    <div class="info-box">
+      <strong>Docker Volume Mapping</strong>
+      <p>Mount your NAS or local folder into the container. The path inside the container is what you enter as <em>Media Base Path</em> above.</p>
+      <pre class="code-snippet">volumes:
+  - /volume1/photos:/data/media:ro
+# media_base_path = /data/media
+
+# Multiple folders:
+  - /volume1/2024:/data/media/2024:ro
+  - /volume1/2025:/data/media/2025:ro</pre>
+      <p class="hint">See <code>docker/docker-compose.yml</code> for full examples.</p>
+    </div>
   </section>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { testMediaSource, getMediaCount } from '../../api.js'
+
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
 
 function update(key, value) {
   emit('update:modelValue', { ...props.modelValue, [key]: value })
 }
+
+const testLoading = ref(false)
+const testResult = ref(null)
+const mediaCount = ref(null)
+
+async function runTest() {
+  testLoading.value = true
+  testResult.value = null
+  try {
+    testResult.value = await testMediaSource(props.modelValue.media_base_path)
+  } catch (e) {
+    testResult.value = { ok: false, error: e.message }
+  } finally {
+    testLoading.value = false
+  }
+}
+
+async function loadCount() {
+  mediaCount.value = await getMediaCount()
+}
+
+onMounted(loadCount)
 </script>
 
 <style scoped>
@@ -116,5 +183,72 @@ input:focus,
 select:focus {
   border-color: var(--input-focus);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.test-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-test, .btn-refresh {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.btn-test:disabled { opacity: 0.55; cursor: default; }
+.btn-refresh {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.btn-refresh:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+
+.test-result {
+  font-size: 0.82rem;
+  font-family: monospace;
+}
+.test-result.ok { color: #4caf7d; }
+.test-result.err { color: #e05555; }
+
+.count-badge {
+  font-size: 0.9rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.3rem 0.6rem;
+  font-family: monospace;
+}
+
+.info-box {
+  margin-top: 1.25rem;
+  background: color-mix(in srgb, var(--accent) 6%, var(--card-bg));
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  font-size: 0.82rem;
+}
+.info-box strong { display: block; margin-bottom: 0.4rem; font-size: 0.83rem; }
+.info-box p { color: var(--text-muted); margin: 0.3rem 0; line-height: 1.5; }
+
+.code-snippet {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  font-family: monospace;
+  line-height: 1.55;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+  color: var(--text);
 }
 </style>

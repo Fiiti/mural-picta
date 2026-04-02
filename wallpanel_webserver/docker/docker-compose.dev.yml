@@ -1,0 +1,21 @@
+# MuralPicta – Entwicklungsmodus (Hot-Reload)
+#
+# Verwendung:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# Änderungen in server/, frontend/ und admin/src/ werden sofort wirksam.
+# Der Admin-Vite-Dev-Server ist NICHT enthalten – nur der Node-Server mit --watch.
+
+services:
+  wallpanel:
+    build:
+      target: builder      # Baut bis Stage 2 (inkl. devDependencies)
+    volumes:
+      - ../server:/app/server          # Servercode live
+      - ../frontend:/app/frontend      # Diashow-Frontend live
+      - ../admin/src:/app/admin/src    # Admin-Quellcode live (nur für Debugging)
+      - ../config:/app/config          # Konfiguration als Bind-Mount
+      - ${MEDIA_PATH:-../medien}:/data/media:ro
+    environment:
+      - NODE_ENV=development
+    command: ["node", "--watch", "server/index.js"]
