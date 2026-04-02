@@ -1,7 +1,15 @@
 <template>
   <header class="admin-header">
     <div class="header-left">
-      <span class="header-title">{{ $t('header.title') }}</span>
+      <img :src="iconUrl" class="header-icon" alt="WallPanel Server" />
+      <span class="header-title">
+        <span class="app-name-block">
+          <span class="app-name">MuralPicta</span>
+          <span class="app-sub">A WallPanel Server</span>
+        </span>
+        <span class="title-sep">◆</span>
+        <span class="admin-label">Admin</span>
+      </span>
     </div>
     <div class="header-center">
       <span
@@ -37,6 +45,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import iconUrl from '../assets/app-icon.jpg'
 
 const props = defineProps({
   locale:       { type: String, required: true },
@@ -86,17 +95,76 @@ function switchLang(lang) {
   pointer-events: none;
 }
 
-.header-left { flex: 0 0 auto; }
+.header-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
 
+/* App-Icon */
+.header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
+/* Titelzeile: "MuralPicta / A WallPanel Server ◆ Admin" */
 .header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.app-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  line-height: 1.1;
+}
+
+.app-name {
   font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  /* Metallischer Textgradient im Dark Mode, einfache Farbe im Light Mode */
+  font-weight: 800;
+  letter-spacing: 0.01em;
   background: linear-gradient(120deg, var(--accent) 0%, var(--accent-light) 55%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.app-sub {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  -webkit-text-fill-color: var(--text-muted);
+  background: none;
+  opacity: 0.75;
+}
+
+.title-sep {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+  -webkit-text-fill-color: var(--text-muted);
+  /* Gradient überschreiben */
+  background: none;
+}
+
+.admin-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  -webkit-text-fill-color: var(--text-muted);
+  background: none;
 }
 
 .header-center {

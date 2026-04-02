@@ -1,6 +1,6 @@
 # Template-System Referenz
 
-Das **Bild-Info-Overlay** in WallPanel ermöglicht es dir, reichhaltige Metadaten direkt auf dem Diashow-Bildschirm anzuzeigen. Du schreibst ein kleines HTML-Template mit speziellen Platzhalter-Variablen, die durch tatsächliche Daten aus den EXIF-Metadaten, GPS-Standortdaten und dem Dateinamen des aktuellen Bildes ersetzt werden.
+Das **Bild-Info-Overlay** in WallPanel ermöglicht Metadaten direkt auf dem Diashow-Bildschirm anzuzeigen. Du schreibst ein kleines HTML-Template mit speziellen Platzhalter-Variablen, die durch tatsächliche Daten aus den EXIF-Metadaten, GPS-Standortdaten und dem Dateinamen des aktuellen Bildes ersetzt werden.
 
 Dieses System gibt dir volle Kontrolle über das Styling per Inline-CSS — Schriftgröße, Farbe, Position, Schatten und mehr.
 
@@ -12,16 +12,16 @@ Dieses System gibt dir volle Kontrolle über das Styling per Inline-CSS — Schr
 |---|---|---|---|
 | `filename` | String | `IMG_1234.jpg` | Dateiname ohne Verzeichnispfad |
 | `DateTimeOriginal` | Datum | `2024-06-15T14:30:00` | Originales Aufnahmedatum aus EXIF |
-| `Make` | String | `Apple` | Kamerahersteller aus EXIF |
-| `Model` | String | `iPhone 14 Pro` | Kameramodell aus EXIF |
+| `Make` | String | `Schnappphone` | Kamerahersteller aus EXIF |
+| `Model` | String | `Masterknips 24` | Kameramodell aus EXIF |
 | `address.country` | String | `Deutschland` | Ländername (aus GPS-Reverse-Geocoding) |
-| `address.state` | String | `Bayern` | Bundesland oder Provinz |
-| `address.county` | String | `München (Landkreis)` | Landkreis / Verwaltungsbezirk |
-| `address.municipality` | String | `München` | Gemeinde |
-| `address.city` | String | `München` | Stadtname |
-| `address.town` | String | `Schwabing` | Stadtteil oder Ortschaft |
-| `address.village` | String | `Oberföhring` | Dorf |
-| `address.road` | String | `Leopoldstraße` | Straßenname |
+| `address.state` | String | `Brandenburg` | Bundesland oder Provinz |
+| `address.county` | String | `Allesistschön (Landkreis)` | Landkreis / Verwaltungsbezirk |
+| `address.municipality` | String | `Heims` | Gemeinde |
+| `address.city` | String | `Ruffelhausen` | Stadtname |
+| `address.town` | String | `Untertout` | Stadtteil oder Ortschaft |
+| `address.village` | String | `Hellebarde` | Dorf |
+| `address.road` | String | `Iststraße` | Straßenname |
 
 > **Hinweis:** `address.*`-Variablen sind nur verfügbar, wenn **Standort aus GPS ermitteln** in den Einstellungen aktiviert ist und das Bild GPS-EXIF-Daten enthält.
 
@@ -56,7 +56,7 @@ Beispiel:
 ```
 ${address.city!prefix=📍 }
 ```
-→ `📍 München` (oder nichts, wenn die Stadt unbekannt ist)
+→ `📍 Ruffelhausen` (oder nichts, wenn die Stadt unbekannt ist)
 
 ### Suffix (nur wenn Wert vorhanden)
 ```
@@ -87,7 +87,7 @@ Mehrere Modifier können auf einer einzelnen Variable kombiniert werden:
 ```
 ${address.city|address.municipality!prefix=📍 !suffix=<br>}
 ```
-→ `📍 München` gefolgt von einem Zeilenumbruch
+→ `📍 Ruffelhausen` gefolgt von einem Zeilenumbruch
 
 ---
 
@@ -147,15 +147,14 @@ Zeigt den spezifischsten verfügbaren Ortsnamen an — zuerst Stadtteil, dann St
 ```html
 📍 ${address.town|address.city} · ${DateTimeOriginal!options=year:numeric,month:short,day:numeric}
 ```
-Beispielausgabe: `📍 München · 15. Jun. 2024`
+Beispielausgabe: `📍 Ruffelhausen · 15. Jun. 2024`
 
 ---
 
 ### Vollständiges Beispiel (lovelace-wallpanel Stil)
 ```html
-<div style="text-align:right; font-size:7vh; font-weight:900; color:#ffff00; text-shadow:0px 0px 1px rgba(0,0,0,1); -webkit-text-stroke:3px black;">
-  ${address.country!suffix=<br>}${address.village|address.town|address.city|address.municipality|address.county!suffix= - }${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}
-</div>
+<div style="text-align:right; font-size:7vh; font-weight:900; color:#ffff00; text-shadow:0px 0px 1px rgba(0,0,0,1); -webkit-text-stroke:3px black;">                                                     
+${address.country!suffix=<br>}${address.village|address.town|address.city|address.municipality|address.county!suffix= -}${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}</div> 
 ```
 
 **Was jeder Teil bewirkt:**
@@ -164,10 +163,27 @@ Beispielausgabe: `📍 München · 15. Jun. 2024`
 - `${address.village|address.town|address.city|address.municipality|address.county!suffix= - }` — Der spezifischste verfügbare Ortsname, von kleinster (Dorf) bis größter (Landkreis) Einheit. Gefolgt von ` - ` als Trennzeichen, aber nur wenn ein Ort gefunden wurde.
 - `${DateTimeOriginal!options=year:numeric,month:short,day:2-digit}` — Datum formatiert als `15. Jun. 2024`.
 
+**Was jeder Teil bewirkt:**
+
+#### Das Styling (div style):
+
+- text-align:right; — Richtet den gesamten Block rechtsbündig aus.
+- font-size:7vh; — Die Schriftgröße beträgt 7 % der Bildschirmhöhe (skaliert mit der Displaygröße).
+- font-weight:900; — Extrem fettgedruckte Schrift.
+- color:#ffff00; — Die Schriftfarbe ist leuchtendes Gelb.
+- -webkit-text-stroke:3px black; — Erzeugt eine 3 Pixel breite, schwarze Umrandung der Buchstaben für beste Lesbarkeit vor jedem Hintergrund.
+
+#### Die Platzhalter:
+
+- ${address.country!suffix=<br>} — Zeigt das Land an, gefolgt von einem Zeilenumbruch (<br>). Falls kein Land in den Metadaten gefunden wird, bleibt dieser Teil komplett leer (kein Platzhalter, kein Umbruch).
+- ${address.village|address.town|address.city|address.municipality|address.county!suffix= -} — Eine Prioritätenliste für den Ort: Es wird der erste gefundene Wert verwendet (vom Dorf über die Stadt bis zum Landkreis). Falls ein Wert gefunden wird, wird ein Bindestrich mit Leerzeichen ( -) als Trenner angefügt.
+- ${DateTimeOriginal!options=year:numeric,month:short,day:2-digit} — Das Aufnahmedatum des Fotos, formatiert nach lokalem Standard (z. B. 15. Juni 2024 oder Jun 15, 2024).
+
+
 **Beispielausgabe (zwei Zeilen):**
 ```
 Deutschland
-Schwabing - 15. Jun. 2024
+Ruffelhausen - 15. Jun. 2024
 ```
 
 ---

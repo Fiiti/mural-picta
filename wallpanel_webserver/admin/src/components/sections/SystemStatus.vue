@@ -2,6 +2,15 @@
   <section class="card">
     <h2>{{ $t('sections.system') }}</h2>
 
+    <!-- Produkt-Branding -->
+    <div class="product-branding">
+      <div class="product-name-block">
+        <span class="product-name">MuralPicta</span>
+        <span class="product-sub">A WallPanel Server</span>
+      </div>
+      <img :src="iconUrl" class="product-icon" alt="MuralPicta" />
+    </div>
+
     <div v-if="status" class="info-grid">
       <div class="info-row">
         <span class="info-label">{{ $t('system.version') }}</span>
@@ -51,6 +60,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getStatus, restartServer } from '../../api.js'
 import LogModal from '../LogModal.vue'
+import iconUrl from '../../assets/app-icon.jpg'
 
 const { t } = useI18n()
 
@@ -132,6 +142,53 @@ h3 {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
+}
+
+/* Produkt-Branding */
+.product-branding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0 1.1rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.product-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.product-name {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-light) 55%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.product-sub {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  -webkit-text-fill-color: var(--text-muted);
+  background: none;
+}
+
+.product-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  opacity: 0.88;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
 }
 
 .info-grid { margin-bottom: 1.2rem; }

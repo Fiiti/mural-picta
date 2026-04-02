@@ -191,7 +191,7 @@ function buildDebugHtml(item, mediaInfo) {
     : row("addr", "-");
 
   return `<table>
-    ${row("WallPanel", `v${appVersion}`)}
+    ${row("MuralPicta", `v${appVersion}`)}
     ${row("Datei", mediaInfo.filename || item.filename)}
     ${row("Pfad", mediaInfo.relativePath || item.relativePath || "-")}
     ${row("Typ", item.type)}

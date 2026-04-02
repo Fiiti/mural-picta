@@ -149,7 +149,8 @@ onMounted(async () => {
 
   /* Text */
   --text: #ECEDF2;
-  --text-muted: #6E6E85;
+  --text-label: #9898B8;   /* Feldüberschriften: heller als muted */
+  --text-muted: #7E7E98;   /* Hinweistexte */
 
   /* Akzent: Gold / Metallisch */
   --accent: #C9A84C;
@@ -191,7 +192,8 @@ onMounted(async () => {
 
   /* Text */
   --text: #1A201A;
-  --text-muted: #4E6B4E;
+  --text-label: #2E4E2E;   /* Feldüberschriften: satter als muted */
+  --text-muted: #4E6B4E;   /* Hinweistexte */
 
   /* Akzent: Waldgrün */
   --accent: #2D7A3A;
@@ -250,6 +252,47 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar);
   border-radius: 3px;
+}
+</style>
+
+<style>
+/* ============================================================
+   Globale Typografie-Overrides für alle Section-Cards.
+   Höhere Spezifizität als Vue-Scoped-Styles → überschreibt
+   korrekt ohne !important.
+   Gilt NICHT für Modals (LogModal, HelpModal).
+   ============================================================ */
+
+/* Section-Titel: etwas größer */
+.content section h2 {
+  font-size: 0.8rem;
+}
+
+/* Feld-Labels: etwas größer + heller (--text-label statt --text-muted) */
+.content .field label {
+  font-size: 0.875rem;
+  color: var(--text-label);
+}
+
+/* Toggle-Row Labels (inline neben Checkbox): etwas größer */
+.content .toggle-row > label {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+/* Hint-Texte: etwas größer + etwas besser sichtbar */
+.content section .hint {
+  font-size: 0.8rem;
+  opacity: 0.82;
+}
+
+/* Eingabefelder: minimal größer */
+.content input[type="text"],
+.content input[type="number"],
+.content input[type="password"],
+.content select,
+.content textarea {
+  font-size: 0.95rem;
 }
 </style>
 

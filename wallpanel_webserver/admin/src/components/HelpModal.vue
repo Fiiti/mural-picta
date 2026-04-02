@@ -8,10 +8,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
 import { marked } from 'marked'
-import helpEn from '../locales/help/en.md?raw'
-import helpDe from '../locales/help/de.md?raw'
 
 const props = defineProps({
   locale: { type: String, required: true }
@@ -19,10 +17,20 @@ const props = defineProps({
 
 defineEmits(['close'])
 
-const renderedContent = computed(() => {
-  const src = props.locale === 'de' ? helpDe : helpEn
-  return marked.parse(src)
-})
+const renderedContent = ref('')
+
+async function loadHelp(locale) {
+  const file = locale === 'de' ? 'de.md' : 'en.md'
+  try {
+    const res = await fetch(`/admin/help/${file}`)
+    const text = await res.text()
+    renderedContent.value = marked.parse(text)
+  } catch {
+    renderedContent.value = '<p>Help file could not be loaded.</p>'
+  }
+}
+
+watch(() => props.locale, loadHelp, { immediate: true })
 </script>
 
 <style scoped>

@@ -162,6 +162,6 @@
     "reloadNote": "Opens the slideshow in a new browser tab."
   },
   "header": {
-    "title": "WallPanel Admin"
+    "appName": "MuralPicta"
   }
 }

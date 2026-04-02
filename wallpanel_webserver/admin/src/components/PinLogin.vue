@@ -1,25 +1,41 @@
 <template>
   <div class="pin-login-wrapper">
     <div class="pin-card">
-      <h2>{{ $t('pin.loginTitle') }}</h2>
+      <!-- Oberer Bereich: Produktname links, Logo rechts -->
+      <div class="pin-header">
+        <div class="brand-block">
+          <span class="brand-name">MuralPicta</span>
+          <span class="brand-sub">A WallPanel Server</span>
+        </div>
+        <img :src="logoUrl" class="brand-logo" alt="MuralPicta" />
+      </div>
+
+      <!-- Trennlinie -->
+      <div class="pin-divider"></div>
+
+      <!-- PIN-Dialog -->
       <p class="login-prompt">{{ $t('pin.loginPrompt') }}</p>
       <form @submit.prevent="handleLogin">
         <div class="field">
           <label for="pin-input">{{ $t('pin.enterPin') }}</label>
-          <input
-            id="pin-input"
-            ref="pinInput"
-            v-model="pin"
-            type="password"
-            autocomplete="current-password"
-            :placeholder="$t('pin.enterPin')"
-            autofocus
-          />
+          <div class="pin-input-wrap">
+            <input
+              id="pin-input"
+              ref="pinInput"
+              v-model="pin"
+              type="password"
+              autocomplete="current-password"
+              :placeholder="$t('pin.enterPin')"
+              autofocus
+            />
+          </div>
         </div>
         <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
-        <button type="submit" class="login-btn" :disabled="loading">
-          {{ loading ? $t('status.loading') : $t('buttons.login') }}
-        </button>
+        <div class="btn-wrap">
+          <button type="submit" class="login-btn" :disabled="loading">
+            {{ loading ? $t('status.loading') : $t('buttons.login') }}
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -29,6 +45,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { login } from '../api.js'
+import logoUrl from '../assets/app-logo.jpg'
 
 const emit = defineEmits(['authenticated'])
 const { t } = useI18n()
@@ -72,10 +89,9 @@ async function handleLogin() {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--card-radius);
-  padding: 2.5rem 2rem;
+  padding: 2.5rem 2.5rem 2rem;
   width: 100%;
-  max-width: 360px;
-  text-align: center;
+  max-width: 520px;
   box-shadow: var(--card-shadow);
   position: relative;
   overflow: hidden;
@@ -88,35 +104,94 @@ async function handleLogin() {
   background: linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 15%, transparent) 65%, transparent 100%);
 }
 
-h2 {
-  font-size: 0.88rem;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
+/* Oberer Header-Bereich: Name links, Logo rechts */
+.pin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.brand-name {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-light) 55%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+.brand-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
+  color: #A8B0BE;
+  -webkit-text-fill-color: #A8B0BE;
+  background: none;
+  white-space: nowrap;
+}
+
+.brand-logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  opacity: 0.9;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+/* Trennlinie */
+.pin-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 30%, transparent) 30%,
+    color-mix(in srgb, var(--accent) 30%, transparent) 70%,
+    transparent 100%
+  );
+  margin-bottom: 1.5rem;
 }
 
 .login-prompt {
-  font-size: 0.85rem;
+  font-size: 0.87rem;
   color: var(--text-muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
 }
 
 .field {
   margin-bottom: 1rem;
-  text-align: left;
 }
 
 label {
   display: block;
   font-size: 0.82rem;
   color: var(--text-muted);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+
+/* PIN-Feld auf feste Breite zentriert */
+.pin-input-wrap {
+  display: flex;
+  justify-content: center;
 }
 
 input[type="password"] {
-  width: 100%;
+  width: 200px;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   border-radius: 7px;
@@ -125,7 +200,7 @@ input[type="password"] {
   font-size: 1rem;
   outline: none;
   text-align: center;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   font-family: inherit;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -138,11 +213,17 @@ input[type="password"]:focus {
   color: #e08080;
   font-size: 0.82rem;
   margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+/* Login-Button zentriert, nicht full-width */
+.btn-wrap {
+  display: flex;
+  justify-content: center;
 }
 
 .login-btn {
-  width: 100%;
-  padding: 0.6rem;
+  padding: 0.6rem 2.5rem;
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   border: none;
