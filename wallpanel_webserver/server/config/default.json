@@ -1,5 +1,5 @@
 {
-  "media_base_path": "/media/photos",
+  "media_base_path": "/data/media",
   "media_list_update_interval": 600,
   "media_order": "random",
   "display_time_image": 15,
