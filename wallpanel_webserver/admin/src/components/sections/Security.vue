@@ -13,28 +13,18 @@
       {{ feedback.message }}
     </p>
 
-    <!-- PIN setzen / aendern -->
+    <!-- PIN setzen / ändern -->
     <form class="pin-form" @submit.prevent="handleSetPin">
       <h3>{{ pinActive ? $t('pin.changePinTitle') : $t('pin.setPinTitle') }}</h3>
 
       <div class="field">
         <label for="new-pin">{{ $t('pin.newPin') }}</label>
-        <input
-          id="new-pin"
-          v-model="newPin"
-          type="password"
-          autocomplete="new-password"
-        />
+        <input id="new-pin" v-model="newPin" type="password" autocomplete="new-password" />
       </div>
 
       <div class="field">
         <label for="confirm-pin">{{ $t('pin.confirmPin') }}</label>
-        <input
-          id="confirm-pin"
-          v-model="confirmPin"
-          type="password"
-          autocomplete="new-password"
-        />
+        <input id="confirm-pin" v-model="confirmPin" type="password" autocomplete="new-password" />
       </div>
 
       <p v-if="validationError" class="validation-error">{{ validationError }}</p>
@@ -46,14 +36,16 @@
 
     <!-- PIN entfernen -->
     <div v-if="pinActive" class="remove-section">
-      <button
-        type="button"
-        class="action-btn danger"
-        :disabled="loading"
-        @click="handleRemovePin"
-      >
+      <button type="button" class="action-btn danger" :disabled="loading" @click="handleRemovePin">
         {{ $t('buttons.removePin') }}
       </button>
+    </div>
+
+    <!-- PIN-Recovery-Hinweis -->
+    <div class="recovery-hint">
+      <strong>{{ $t('pin.forgotTitle') }}</strong><br>
+      {{ $t('pin.forgotHint') }}<br>
+      <code>config/config.json</code> → set <code>"admin_pin_hash"</code> to <code>null</code>
     </div>
   </section>
 </template>
@@ -65,11 +57,11 @@ import { getAuthStatus, setPin, removePin } from '../../api.js'
 
 const { t } = useI18n()
 
-const pinActive = ref(false)
-const newPin = ref('')
-const confirmPin = ref('')
-const loading = ref(false)
-const feedback = ref({ message: '', isError: false })
+const pinActive   = ref(false)
+const newPin      = ref('')
+const confirmPin  = ref('')
+const loading     = ref(false)
+const feedback    = ref({ message: '', isError: false })
 
 const validationError = computed(() => {
   if (!newPin.value && !confirmPin.value) return ''
@@ -81,11 +73,9 @@ const validationError = computed(() => {
 
 async function loadStatus() {
   try {
-    const status = await getAuthStatus()
-    pinActive.value = status.pinSet === true
-  } catch {
-    pinActive.value = false
-  }
+    const s = await getAuthStatus()
+    pinActive.value = s.pinSet === true
+  } catch { pinActive.value = false }
 }
 
 function showFeedback(msg, isError = false) {
@@ -94,12 +84,7 @@ function showFeedback(msg, isError = false) {
 }
 
 async function handleSetPin() {
-  if (!newPin.value) return
-  if (validationError.value) return
-  if (newPin.value.length < 4) {
-    return
-  }
-
+  if (!newPin.value || validationError.value) return
   loading.value = true
   try {
     const ok = await setPin(newPin.value)
@@ -111,11 +96,8 @@ async function handleSetPin() {
     } else {
       showFeedback(t('status.pinSetError'), true)
     }
-  } catch {
-    showFeedback(t('status.pinSetError'), true)
-  } finally {
-    loading.value = false
-  }
+  } catch { showFeedback(t('status.pinSetError'), true) }
+  finally { loading.value = false }
 }
 
 async function handleRemovePin() {
@@ -128,11 +110,8 @@ async function handleRemovePin() {
     } else {
       showFeedback(t('status.pinRemoveError'), true)
     }
-  } catch {
-    showFeedback(t('status.pinRemoveError'), true)
-  } finally {
-    loading.value = false
-  }
+  } catch { showFeedback(t('status.pinRemoveError'), true) }
+  finally { loading.value = false }
 }
 
 onMounted(loadStatus)
@@ -140,8 +119,8 @@ onMounted(loadStatus)
 
 <style scoped>
 .card {
-  background: #16213e;
-  border: 1px solid #0f3460;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -149,7 +128,7 @@ onMounted(loadStatus)
 
 h2 {
   font-size: 0.82rem;
-  color: #a0c4ff;
+  color: var(--accent);
   margin-bottom: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -158,7 +137,7 @@ h2 {
 
 h3 {
   font-size: 0.88rem;
-  color: #ccc;
+  color: var(--text);
   margin-bottom: 0.8rem;
   font-weight: 600;
 }
@@ -172,17 +151,15 @@ h3 {
   font-size: 0.88rem;
   margin-bottom: 1.2rem;
 }
-
 .status-row.pin-off {
-  background: rgba(100, 100, 100, 0.1);
-  border: 1px solid #333;
-  color: #888;
+  background: color-mix(in srgb, var(--text-muted) 10%, transparent);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
 }
-
 .status-row.pin-on {
-  background: rgba(160, 196, 255, 0.08);
-  border: 1px solid rgba(160, 196, 255, 0.3);
-  color: #a0c4ff;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent);
 }
 
 .status-dot {
@@ -191,28 +168,26 @@ h3 {
   border-radius: 50%;
   flex-shrink: 0;
 }
-
-.pin-off .status-dot { background: #555; }
-.pin-on .status-dot { background: #a0c4ff; box-shadow: 0 0 6px rgba(160,196,255,0.5); }
+.pin-off .status-dot { background: var(--text-muted); }
+.pin-on  .status-dot { background: var(--accent); box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent); }
 
 .feedback {
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.82rem;
   margin-bottom: 1rem;
-  background: rgba(160, 196, 255, 0.1);
-  color: #a0c4ff;
-  border: 1px solid rgba(160, 196, 255, 0.2);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
 }
-
 .feedback.error {
-  background: rgba(255, 100, 100, 0.1);
-  color: #ff8888;
-  border-color: rgba(255, 100, 100, 0.2);
+  background: rgba(180, 50, 50, 0.12);
+  color: #e07070;
+  border-color: rgba(180, 50, 50, 0.25);
 }
 
 .pin-form {
-  border-top: 1px solid #0f3460;
+  border-top: 1px solid var(--border);
   padding-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -222,31 +197,25 @@ h3 {
 label {
   display: block;
   font-size: 0.82rem;
-  color: #aaa;
+  color: var(--text-muted);
   margin-bottom: 0.3rem;
 }
 
 input[type="password"] {
   width: 100%;
-  background: #0d1b2a;
-  border: 1px solid #0f3460;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #e0e0e0;
+  color: var(--text);
   padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.15s;
 }
+input:focus { border-color: var(--input-focus); }
 
-input:focus {
-  border-color: #a0c4ff;
-}
-
-.validation-error {
-  font-size: 0.78rem;
-  color: #ff8888;
-  margin-bottom: 0.6rem;
-}
+.validation-error { font-size: 0.78rem; color: #e07070; margin-bottom: 0.6rem; }
 
 .action-btn {
   padding: 0.45rem 1.1rem;
@@ -257,30 +226,44 @@ input:focus {
   cursor: pointer;
   transition: opacity 0.15s, transform 0.1s;
 }
-
-.action-btn:hover:not(:disabled) {
-  opacity: 0.88;
-  transform: translateY(-1px);
-}
-
-.action-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
+.action-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .action-btn.primary {
-  background: #a0c4ff;
-  color: #0d1b2a;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
-
 .action-btn.danger {
-  background: rgba(255, 80, 80, 0.15);
-  color: #ff8888;
-  border: 1px solid rgba(255, 80, 80, 0.3);
+  background: rgba(180, 50, 50, 0.15);
+  color: #e07070;
+  border: 1px solid rgba(180, 50, 50, 0.3);
 }
 
 .remove-section {
-  border-top: 1px solid #0f3460;
+  border-top: 1px solid var(--border);
   padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* PIN-Recovery-Hinweis */
+.recovery-hint {
+  margin-top: 1.2rem;
+  padding: 0.75rem 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.recovery-hint strong { color: var(--text); }
+.recovery-hint code {
+  background: var(--card-bg);
+  color: var(--accent);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.82em;
+  border: 1px solid var(--border);
 }
 </style>

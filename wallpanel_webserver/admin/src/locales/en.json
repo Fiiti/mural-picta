@@ -113,7 +113,14 @@
     "changePin": "Change PIN",
     "removePin": "Remove PIN Protection",
     "close": "Close",
-    "login": "Login"
+    "login": "Login",
+    "viewLog": "View Live Log"
+  },
+  "log": {
+    "title": "Server Log",
+    "live": "Live",
+    "noErrors": "No errors recorded — server is running clean.",
+    "close": "Close"
   },
   "status": {
     "saved": "Settings saved successfully.",
@@ -141,7 +148,9 @@
     "wrongPin": "Wrong PIN, please try again.",
     "loginTitle": "Admin Login",
     "loginPrompt": "This admin panel is protected with a PIN.",
-    "enterPin": "Enter PIN"
+    "enterPin": "Enter PIN",
+    "forgotTitle": "Forgot your PIN?",
+    "forgotHint": "Edit the config file on the server and set admin_pin_hash to null:"
   },
   "system": {
     "version": "Version",

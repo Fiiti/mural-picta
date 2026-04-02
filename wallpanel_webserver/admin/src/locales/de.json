@@ -113,7 +113,14 @@
     "changePin": "PIN ändern",
     "removePin": "PIN-Schutz entfernen",
     "close": "Schließen",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "viewLog": "Live-Log anzeigen"
+  },
+  "log": {
+    "title": "Server-Log",
+    "live": "Live",
+    "noErrors": "Keine Fehler aufgezeichnet — Server läuft sauber.",
+    "close": "Schließen"
   },
   "status": {
     "saved": "Einstellungen erfolgreich gespeichert.",
@@ -141,7 +148,9 @@
     "wrongPin": "Falscher PIN, bitte erneut versuchen.",
     "loginTitle": "Admin-Anmeldung",
     "loginPrompt": "Dieses Admin-Panel ist mit einem PIN geschützt.",
-    "enterPin": "PIN eingeben"
+    "enterPin": "PIN eingeben",
+    "forgotTitle": "PIN vergessen?",
+    "forgotHint": "Bearbeite die Konfigurationsdatei auf dem Server und setze admin_pin_hash auf null:"
   },
   "system": {
     "version": "Version",
