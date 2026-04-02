@@ -1,7 +1,12 @@
 # MuralPicta – WallPanel Server
+<img src="assets/logo.jpg" alt="MuralPicta Logo" width="300">
 
-A self-hosted image and video slideshow server for wall panels and tablets.
-Runs completely independently — no Home Assistant or cloud service required.
+## A self-hosted image and video browser slideshow server e. g. for wall panels and tablets.
+Runs completely local and independently — no cloud service required.
+
+---
+## ⚠️ This repository is still under development. Do not use it until these lines are removed.⚠️
+---
 
 ## Features
 
