@@ -44,6 +44,11 @@ CLAUDE.md
 dev_basis/
 wallpanel_server_*.jpg
 
+# Lokale Entwicklungswerkzeuge (nur für den Entwickler, nicht für Nutzer)
+/package.json
+/package-lock.json
+/skills-lock.json
+
 # WallPanel: benutzerspezifische Konfiguration und Caches (nicht versionieren)
 wallpanel_webserver/config/config.json
 wallpanel_webserver/config/geocode_cache.json
