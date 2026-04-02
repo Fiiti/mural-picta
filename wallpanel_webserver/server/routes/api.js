@@ -108,6 +108,12 @@ router.post("/restart", (req, res) => {
   setTimeout(() => process.exit(0), 300);
 });
 
+// POST /api/stop
+router.post("/stop", (req, res) => {
+  res.json({ ok: true, message: "Server wird gestoppt..." });
+  setTimeout(() => process.exit(2), 300);
+});
+
 // Hilfsfunktion: PIN hashen (SHA-256, ausreichend fuer Kinderschutz-Zweck)
 function hashPin(pin) {
   return crypto.createHash("sha256").update(pin).digest("hex");

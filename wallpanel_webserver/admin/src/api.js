@@ -30,6 +30,12 @@ export async function restartServer() {
   return res.json()
 }
 
+export async function stopServer() {
+  const res = await fetch('/api/stop', { method: 'POST' })
+  if (!res.ok) throw new Error('Fehler beim Stoppen')
+  return res.json()
+}
+
 export async function getAuthStatus() {
   const res = await fetch('/api/auth-status')
   if (!res.ok) return { requiresPin: false, pinSet: false }

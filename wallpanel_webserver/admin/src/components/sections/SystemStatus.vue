@@ -30,8 +30,12 @@
       <button type="button" class="action-btn log-btn" @click="showLogModal = true">
         📋 {{ $t('buttons.viewLog') }}
       </button>
-      <button type="button" class="action-btn danger" :disabled="restarting" @click="handleRestart">
+      <button type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleRestart">
         {{ restarting ? $t('status.restarting') : $t('buttons.restart') }}
+      </button>
+      <button type="button" class="action-btn stop" :disabled="restarting || stopping" @click="handleStop"
+        title="Stops the server process. In Docker the container will NOT restart.">
+        {{ stopping ? 'Stopping…' : $t('buttons.stop') }}
       </button>
     </div>
 
@@ -58,7 +62,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getStatus, restartServer } from '../../api.js'
+import { getStatus, restartServer, stopServer } from '../../api.js'
 import LogModal from '../LogModal.vue'
 import iconUrl from '../../assets/app-icon.jpg'
 
@@ -66,6 +70,7 @@ const { t } = useI18n()
 
 const status     = ref(null)
 const restarting = ref(false)
+const stopping   = ref(false)
 const showLogModal = ref(false)
 let intervalId   = null
 
@@ -94,6 +99,13 @@ async function handleRestart() {
     restarting.value = false
     await loadStatus()
   }, 3000)
+}
+
+async function handleStop() {
+  if (!window.confirm('Stop the server process? In Docker with restart:unless-stopped the container will NOT restart automatically.')) return
+  stopping.value = true
+  try { await stopServer() } catch { /* Verbindungsfehler erwartet */ }
+  setTimeout(() => { stopping.value = false }, 4000)
 }
 
 async function loadStatus() {
@@ -233,6 +245,13 @@ h3 {
   color: #e07070;
 }
 .action-btn.danger:hover:not(:disabled) { border-color: rgba(180, 50, 50, 0.7); }
+
+.action-btn.stop {
+  background: rgba(120, 60, 180, 0.10);
+  border-color: rgba(120, 60, 180, 0.30);
+  color: #b88ae0;
+}
+.action-btn.stop:hover:not(:disabled) { border-color: rgba(120, 60, 180, 0.65); }
 
 .errors-section {
   border-top: 1px solid var(--border);

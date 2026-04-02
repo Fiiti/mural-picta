@@ -108,6 +108,7 @@
     "save": "Save Settings",
     "reload": "Reload Slideshow",
     "restart": "Restart Server",
+    "stop": "Stop Server",
     "openHelp": "? Template Help",
     "setPin": "Set PIN",
     "changePin": "Change PIN",

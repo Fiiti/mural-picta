@@ -7,6 +7,7 @@
       @save="saveAll"
       :status="saveStatus"
       @toggle-theme="toggleTheme"
+      @open-docs="showDocs = true"
     />
 
     <PinLogin v-if="showPinLogin" @authenticated="onAuthenticated" />
@@ -30,7 +31,14 @@
     <HelpModal
       v-if="showHelp"
       :locale="currentLocale"
+      type="template"
       @close="showHelp = false"
+    />
+    <HelpModal
+      v-if="showDocs"
+      :locale="currentLocale"
+      type="docs"
+      @close="showDocs = false"
     />
   </div>
 </template>
@@ -54,13 +62,14 @@ import Debug from './components/sections/Debug.vue'
 import Security from './components/sections/Security.vue'
 import SystemStatus from './components/sections/SystemStatus.vue'
 
-import { getConfig, saveConfig, getAuthStatus } from './api.js'
+import { getConfig, saveConfig, getAuthStatus, restartServer } from './api.js'
 
 const { locale } = useI18n()
 
 const config = ref(null)
 const currentLocale = ref(locale.value)
 const showHelp = ref(false)
+const showDocs = ref(false)
 const showPinLogin = ref(false)
 const saveStatus = ref({ message: '', isError: false })
 
@@ -115,7 +124,13 @@ async function saveAll() {
   if (!config.value) return
   try {
     await saveConfig(config.value)
-    showSaveStatus('Settings saved successfully.')
+    showSaveStatus('Saving… restarting server.')
+    try {
+      await restartServer()
+      showSaveStatus('Settings saved. Server restarting…')
+    } catch {
+      showSaveStatus('Settings saved. (Restart failed – server may be offline)', true)
+    }
   } catch (err) {
     showSaveStatus('Error saving settings: ' + err.message, true)
   }

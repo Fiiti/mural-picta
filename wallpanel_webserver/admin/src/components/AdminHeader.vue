@@ -37,13 +37,24 @@
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
       >{{ isDark ? '☀️' : '🌙' }}</button>
 
+      <!-- Documentation Button -->
+      <button class="docs-btn" @click="$emit('open-docs')" title="Documentation">
+        Docs
+      </button>
+
       <button class="save-btn" @click="$emit('save')">{{ $t('buttons.save') }}</button>
+
+      <!-- Heartbeat Indicator -->
+      <div class="heartbeat" :title="heartbeatTitle">
+        <span class="hb-dot" :class="heartbeatState"></span>
+        <span class="hb-label">Heartbeat</span>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import iconUrl from '../assets/app-icon.jpg'
 
@@ -53,7 +64,7 @@ const props = defineProps({
   status:       { type: Object, default: () => ({ message: '', isError: false }) }
 })
 
-const emit = defineEmits(['update:locale', 'save', 'toggle-theme'])
+const emit = defineEmits(['update:locale', 'save', 'toggle-theme', 'open-docs'])
 
 const { locale: i18nLocale } = useI18n()
 
@@ -64,6 +75,34 @@ function switchLang(lang) {
   localStorage.setItem('wallpanel-lang', lang)
   emit('update:locale', lang)
 }
+
+// Heartbeat
+const heartbeatState = ref('unknown')  // 'ok' | 'warning' | 'offline' | 'unknown'
+const heartbeatTitle = computed(() => ({
+  ok:      'Server running – no errors',
+  warning: 'Server running – check recent errors',
+  offline: 'Server unreachable',
+  unknown: 'Checking…'
+})[heartbeatState.value] || '')
+
+let hbInterval = null
+
+async function checkHeartbeat() {
+  try {
+    const res = await fetch('/api/status')
+    if (!res.ok) { heartbeatState.value = 'offline'; return }
+    const data = await res.json()
+    heartbeatState.value = (data.recentErrors && data.recentErrors.length > 0) ? 'warning' : 'ok'
+  } catch {
+    heartbeatState.value = 'offline'
+  }
+}
+
+onMounted(() => {
+  checkHeartbeat()
+  hbInterval = setInterval(checkHeartbeat, 10000)
+})
+onUnmounted(() => { if (hbInterval) clearInterval(hbInterval) })
 </script>
 
 <style scoped>
@@ -254,4 +293,67 @@ function switchLang(lang) {
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 .save-btn:active { transform: translateY(0); box-shadow: none; }
+
+/* Docs-Button */
+.docs-btn {
+  padding: 0.32rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--btn-secondary-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.docs-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Heartbeat */
+.heartbeat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-left: 0.25rem;
+}
+
+.hb-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.hb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: block;
+  background: var(--text-muted);
+  opacity: 0.4;
+}
+
+.hb-dot.ok {
+  background: #4caf7d;
+  opacity: 1;
+  animation: hb-pulse 2.5s ease-in-out infinite;
+}
+
+.hb-dot.warning {
+  background: #e0b040;
+  opacity: 1;
+}
+
+.hb-dot.offline {
+  background: #e05555;
+  opacity: 1;
+}
+
+@keyframes hb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 125, 0.5); opacity: 1; }
+  50%       { box-shadow: 0 0 0 4px rgba(76, 175, 125, 0); opacity: 0.65; }
+}
 </style>

@@ -12,25 +12,28 @@ import { ref, watch } from 'vue'
 import { marked } from 'marked'
 
 const props = defineProps({
-  locale: { type: String, required: true }
+  locale: { type: String, required: true },
+  type:   { type: String, default: 'template' }  // 'template' | 'docs'
 })
 
 defineEmits(['close'])
 
 const renderedContent = ref('')
 
-async function loadHelp(locale) {
-  const file = locale === 'de' ? 'de.md' : 'en.md'
+async function loadHelp() {
+  const lang   = props.locale === 'de' ? 'de' : 'en'
+  const suffix = props.type === 'docs' ? 'docs' : 'template'
+  const file   = `${lang}_${suffix}.md`
   try {
     const res = await fetch(`/admin/help/${file}`)
     const text = await res.text()
     renderedContent.value = marked.parse(text)
   } catch {
-    renderedContent.value = '<p>Help file could not be loaded.</p>'
+    renderedContent.value = '<p>File could not be loaded.</p>'
   }
 }
 
-watch(() => props.locale, loadHelp, { immediate: true })
+watch([() => props.locale, () => props.type], loadHelp, { immediate: true })
 </script>
 
 <style scoped>
