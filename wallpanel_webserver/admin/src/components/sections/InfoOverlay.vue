@@ -82,19 +82,29 @@ function update(key, value) {
 
 <style scoped>
 .card {
-  background: #16213e;
-  border: 1px solid #0f3460;
-  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 15%, transparent) 65%, transparent 100%);
 }
 
 h2 {
-  font-size: 0.82rem;
-  color: #a0c4ff;
-  margin-bottom: 1.2rem;
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-bottom: 1.3rem;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.09em;
   font-weight: 700;
 }
 
@@ -103,53 +113,53 @@ h2 {
 label {
   display: block;
   font-size: 0.82rem;
-  color: #aaa;
+  color: var(--text-muted);
   margin-bottom: 0.3rem;
 }
 
 .hint {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
   margin-top: 0.25rem;
-  line-height: 1.4;
+  line-height: 1.45;
+  opacity: 0.75;
 }
 
 .hint code {
-  background: #0d1b2a;
-  color: #a0c4ff;
-  padding: 0.05em 0.3em;
-  border-radius: 3px;
-  font-size: 0.9em;
-}
-
-.template-hint {
-  color: #777;
+  background: var(--input-bg);
+  color: var(--accent-light);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  font-size: 0.88em;
+  border: 1px solid var(--border);
 }
 
 select,
 textarea {
   width: 100%;
-  background: #0d1b2a;
-  border: 1px solid #0f3460;
-  border-radius: 6px;
-  color: #e0e0e0;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  color: var(--text);
   padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 textarea {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   resize: vertical;
   min-height: 8rem;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 select:focus,
 textarea:focus {
-  border-color: #a0c4ff;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .toggle-row {
@@ -157,34 +167,34 @@ textarea:focus {
   align-items: center;
   justify-content: space-between;
 }
-
 .toggle-row label {
   margin: 0;
-  font-size: 0.95rem;
-  color: #e0e0e0;
+  font-size: 0.93rem;
+  color: var(--text);
 }
 
 input[type="checkbox"] {
   width: 1.1rem;
   height: 1.1rem;
   cursor: pointer;
-  accent-color: #a0c4ff;
+  accent-color: var(--accent);
 }
 
 .help-btn {
   margin-top: 0.6rem;
-  padding: 0.4rem 1rem;
-  background: #0f3460;
-  border: 1px solid #a0c4ff;
-  color: #a0c4ff;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  padding: 0.38rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent);
+  border-radius: 7px;
+  font-size: 0.83rem;
+  font-family: inherit;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-
 .help-btn:hover {
-  background: #a0c4ff;
-  color: #0d1b2a;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
 }
 </style>

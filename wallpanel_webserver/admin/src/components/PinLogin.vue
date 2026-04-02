@@ -69,26 +69,37 @@ async function handleLogin() {
 }
 
 .pin-card {
-  background: #16213e;
-  border: 1px solid #0f3460;
-  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 360px;
   text-align: center;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+.pin-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 15%, transparent) 65%, transparent 100%);
 }
 
 h2 {
-  font-size: 1.1rem;
-  color: #a0c4ff;
+  font-size: 0.88rem;
+  color: var(--accent);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 .login-prompt {
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -100,29 +111,31 @@ h2 {
 label {
   display: block;
   font-size: 0.82rem;
-  color: #aaa;
+  color: var(--text-muted);
   margin-bottom: 0.3rem;
 }
 
 input[type="password"] {
   width: 100%;
-  background: #0d1b2a;
-  border: 1px solid #0f3460;
-  border-radius: 6px;
-  color: #e0e0e0;
-  padding: 0.5rem 0.75rem;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  color: var(--text);
+  padding: 0.55rem 0.75rem;
   font-size: 1rem;
   outline: none;
   text-align: center;
   letter-spacing: 0.15em;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
-
 input[type="password"]:focus {
-  border-color: #a0c4ff;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .error-msg {
-  color: #ff8888;
+  color: #e08080;
   font-size: 0.82rem;
   margin-bottom: 0.8rem;
 }
@@ -130,20 +143,21 @@ input[type="password"]:focus {
 .login-btn {
   width: 100%;
   padding: 0.6rem;
-  background: #a0c4ff;
-  color: #0d1b2a;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  border-radius: 7px;
+  font-size: 0.93rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s;
+  font-family: inherit;
+  transition: opacity 0.15s, box-shadow 0.15s, transform 0.1s;
 }
-
 .login-btn:hover:not(:disabled) {
   opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
-
 .login-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

@@ -67,19 +67,29 @@ function update(key, value) {
 
 <style scoped>
 .card {
-  background: #16213e;
-  border: 1px solid #0f3460;
-  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 15%, transparent) 65%, transparent 100%);
 }
 
 h2 {
-  font-size: 0.82rem;
-  color: #a0c4ff;
-  margin-bottom: 1.2rem;
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-bottom: 1.3rem;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.09em;
   font-weight: 700;
 }
 
@@ -88,32 +98,35 @@ h2 {
 label {
   display: block;
   font-size: 0.82rem;
-  color: #aaa;
+  color: var(--text-muted);
   margin-bottom: 0.3rem;
 }
 
 .hint {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
   margin-top: 0.25rem;
-  line-height: 1.4;
+  line-height: 1.45;
+  opacity: 0.75;
 }
 
 input[type="number"],
 select {
   width: 100%;
-  background: #0d1b2a;
-  border: 1px solid #0f3460;
-  border-radius: 6px;
-  color: #e0e0e0;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  color: var(--text);
   padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus,
 select:focus {
-  border-color: #a0c4ff;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 </style>

@@ -128,58 +128,95 @@ onMounted(async () => {
 </script>
 
 <style>
-/* CSS Custom Properties – Theme-System */
+/* ============================================================
+   CSS Design Tokens – Theme-System
+   Dark:  Echtes Schwarz + Gold/Metallisch
+   Light: Hellgrünes Grau + Waldgrün
+   ============================================================ */
+
 :root,
 :root[data-theme="dark"] {
-  --bg: #241D21;
-  --bg-gradient: radial-gradient(ellipse at 25% 15%, rgba(125, 31, 198, 0.18) 0%, transparent 55%),
-                 radial-gradient(ellipse at 75% 85%, rgba(125, 31, 198, 0.10) 0%, transparent 50%),
-                 linear-gradient(160deg, #241D21 0%, #1E1620 60%, #241D21 100%);
-  --card-bg: #2D2530;
-  --card-bg-hover: #342A38;
-  --border: #3D3245;
-  --text: #E7E3E5;
-  --text-muted: #8C947C;
-  --accent: #7D1FC6;
-  --accent-light: #9B45D6;
-  --accent-contrast: #E7E3E5;
-  --input-bg: #1A1317;
-  --input-border: #3D3245;
-  --input-focus: #7D1FC6;
-  --btn-primary-bg: #7D1FC6;
-  --btn-primary-text: #E7E3E5;
-  --btn-secondary-bg: #2D2530;
-  --btn-secondary-text: #E7E3E5;
-  --btn-danger-bg: #6B1A2A;
-  --btn-danger-text: #E7E3E5;
-  --status-bar-bg: #2D2530;
-  --scrollbar: #3D3245;
+  /* Hintergründe */
+  --bg: #0E0E12;
+  --bg-gradient: linear-gradient(160deg, #0D0E13 0%, #11121A 55%, #0E0D12 100%);
+  --card-bg: #15151C;
+  --card-bg-hover: #1A1A24;
+  --card-radius: 12px;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+
+  /* Rahmen */
+  --border: #21212E;
+
+  /* Text */
+  --text: #ECEDF2;
+  --text-muted: #6E6E85;
+
+  /* Akzent: Gold / Metallisch */
+  --accent: #C9A84C;
+  --accent-light: #E2C97E;
+  --accent-contrast: #0A0A0E;
+  --accent-glow: rgba(201, 168, 76, 0.18);
+
+  /* Eingabefelder */
+  --input-bg: #0C0C13;
+  --input-border: #1D1D2C;
+  --input-focus: #C9A84C;
+
+  /* Buttons */
+  --btn-primary-bg: #C9A84C;
+  --btn-primary-text: #0A0A0E;
+  --btn-secondary-bg: #1A1A24;
+  --btn-secondary-text: #ECEDF2;
+  --btn-danger-bg: rgba(180, 50, 50, 0.12);
+  --btn-danger-text: #E08080;
+  --btn-danger-border: rgba(180, 50, 50, 0.30);
+
+  /* Sonstiges */
+  --status-bar-bg: #0F0F16;
+  --scrollbar: #21212E;
+  --header-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
 }
 
 :root[data-theme="light"] {
-  --bg: #D1CBC8;
-  --bg-gradient: radial-gradient(ellipse at 70% 20%, rgba(157, 116, 93, 0.20) 0%, transparent 55%),
-                 radial-gradient(ellipse at 20% 80%, rgba(118, 86, 72, 0.12) 0%, transparent 50%),
-                 linear-gradient(160deg, #D1CBC8 0%, #C8C0BC 60%, #D1CBC8 100%);
-  --card-bg: #E8E2DF;
-  --card-bg-hover: #EDE8E5;
-  --border: #C0B5B0;
-  --text: #1F2026;
-  --text-muted: #765648;
-  --accent: #9D745D;
-  --accent-light: #B08870;
+  /* Hintergründe */
+  --bg: #F2F5F2;
+  --bg-gradient: linear-gradient(160deg, #EFF3EF 0%, #F5F8F5 60%, #EEF2EE 100%);
+  --card-bg: #FFFFFF;
+  --card-bg-hover: #F7FAF7;
+  --card-radius: 12px;
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 14px rgba(0, 0, 0, 0.05);
+
+  /* Rahmen */
+  --border: #D2E2D2;
+
+  /* Text */
+  --text: #1A201A;
+  --text-muted: #4E6B4E;
+
+  /* Akzent: Waldgrün */
+  --accent: #2D7A3A;
+  --accent-light: #4EAF5D;
   --accent-contrast: #FFFFFF;
-  --input-bg: #F5F0EE;
-  --input-border: #C0B5B0;
-  --input-focus: #9D745D;
-  --btn-primary-bg: #9D745D;
+  --accent-glow: rgba(45, 122, 58, 0.13);
+
+  /* Eingabefelder */
+  --input-bg: #FAFCFA;
+  --input-border: #BACED4;
+  --input-focus: #2D7A3A;
+
+  /* Buttons */
+  --btn-primary-bg: #2D7A3A;
   --btn-primary-text: #FFFFFF;
-  --btn-secondary-bg: #E8E2DF;
-  --btn-secondary-text: #1F2026;
-  --btn-danger-bg: #8B3A3A;
-  --btn-danger-text: #FFFFFF;
-  --status-bar-bg: #E8E2DF;
-  --scrollbar: #C0B5B0;
+  --btn-secondary-bg: #EAF0EA;
+  --btn-secondary-text: #1A201A;
+  --btn-danger-bg: rgba(180, 50, 50, 0.08);
+  --btn-danger-text: #C62828;
+  --btn-danger-border: rgba(180, 50, 50, 0.25);
+
+  /* Sonstiges */
+  --status-bar-bg: #FFFFFF;
+  --scrollbar: #BACED4;
+  --header-shadow: 0 1px 0 #D2E2D2, 0 2px 12px rgba(0, 0, 0, 0.07);
 }
 
 /* Globale Basis-Styles */
@@ -195,6 +232,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 #app {
@@ -203,8 +241,8 @@ body {
 
 /* Globale Scrollbar-Stile */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;

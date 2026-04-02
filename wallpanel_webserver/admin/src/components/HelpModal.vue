@@ -46,19 +46,20 @@ const renderedContent = computed(() => {
 
 .modal-panel {
   position: relative;
-  background: #1a1a2e;
-  border: 1px solid #0f3460;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
   padding: 2rem;
   max-width: 900px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   animation: panelIn 0.2s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes panelIn {
-  from { opacity: 0; transform: translateY(-20px); }
+  from { opacity: 0; transform: translateY(-16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -67,10 +68,10 @@ const renderedContent = computed(() => {
   float: right;
   top: 0;
   margin-left: 1rem;
-  background: #0f3460;
-  border: 1px solid #a0c4ff;
-  color: #a0c4ff;
-  border-radius: 6px;
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 7px;
   font-size: 1.4rem;
   line-height: 1;
   width: 2rem;
@@ -79,36 +80,36 @@ const renderedContent = computed(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   z-index: 10;
 }
-
 .close-btn:hover {
-  background: #a0c4ff;
-  color: #0d1b2a;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
 }
 </style>
 
 <style>
 /* Globale Styles fuer gerendertes Markdown - nicht scoped, da v-html */
 .help-content h1 {
-  font-size: 1.5rem;
-  color: #a0c4ff;
+  font-size: 1.45rem;
+  color: var(--accent);
   margin-bottom: 0.5rem;
   padding-bottom: 0.4rem;
-  border-bottom: 1px solid #0f3460;
+  border-bottom: 1px solid var(--border);
 }
 
 .help-content h2 {
-  font-size: 1.15rem;
-  color: #a0c4ff;
+  font-size: 1.1rem;
+  color: var(--accent);
   margin-top: 1.8rem;
   margin-bottom: 0.6rem;
 }
 
 .help-content h3 {
-  font-size: 0.98rem;
-  color: #a0c4ff;
+  font-size: 0.95rem;
+  color: var(--accent-light);
   margin-top: 1.2rem;
   margin-bottom: 0.4rem;
 }
@@ -116,7 +117,7 @@ const renderedContent = computed(() => {
 .help-content p {
   line-height: 1.65;
   margin-bottom: 0.8rem;
-  color: #e0e0e0;
+  color: var(--text);
 }
 
 .help-content table {
@@ -129,34 +130,35 @@ const renderedContent = computed(() => {
 .help-content td,
 .help-content th {
   padding: 0.4rem 0.7rem;
-  border: 1px solid #0f3460;
+  border: 1px solid var(--border);
   text-align: left;
-  color: #e0e0e0;
+  color: var(--text);
 }
 
 .help-content th {
-  background: #16213e;
-  color: #a0c4ff;
+  background: var(--input-bg);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .help-content tr:nth-child(even) td {
-  background: rgba(15, 52, 96, 0.2);
+  background: color-mix(in srgb, var(--border) 20%, transparent);
 }
 
 .help-content code {
-  background: #0d1b2a;
-  color: #a0c4ff;
+  background: var(--input-bg);
+  color: var(--accent-light);
   padding: 0.1em 0.35em;
-  border-radius: 3px;
+  border-radius: 4px;
   font-size: 0.87em;
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+  border: 1px solid var(--border);
 }
 
 .help-content pre {
-  background: #0d1b2a;
-  border: 1px solid #0f3460;
-  border-radius: 6px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 1rem;
   overflow-x: auto;
   margin-bottom: 1rem;
@@ -164,16 +166,17 @@ const renderedContent = computed(() => {
 
 .help-content pre code {
   background: transparent;
+  border: none;
   padding: 0;
-  color: #c8e6c9;
+  color: var(--accent-light);
   font-size: 0.85em;
 }
 
 .help-content blockquote {
-  border-left: 3px solid #0f3460;
+  border-left: 3px solid var(--accent);
   padding-left: 1rem;
   margin-left: 0;
-  color: #aaa;
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -185,16 +188,17 @@ const renderedContent = computed(() => {
 
 .help-content li {
   margin-bottom: 0.3rem;
-  color: #e0e0e0;
+  color: var(--text);
 }
 
 .help-content hr {
   border: none;
-  border-top: 1px solid #0f3460;
+  border-top: 1px solid var(--border);
   margin: 1.5rem 0;
 }
 
 .help-content strong {
-  color: #fff;
+  color: var(--text);
+  font-weight: 600;
 }
 </style>
