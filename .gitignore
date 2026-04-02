@@ -39,6 +39,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .claude/
 .continue/
 
+# Projektspezifisch: nicht im öffentlichen Repo
+CLAUDE.md
+dev_basis/
+wallpanel_server_*.jpg
+
 # WallPanel: benutzerspezifische Konfiguration und Caches (nicht versionieren)
 wallpanel_webserver/config/config.json
 wallpanel_webserver/config/geocode_cache.json
