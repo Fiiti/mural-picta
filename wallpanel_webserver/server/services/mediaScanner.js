@@ -26,8 +26,10 @@ function scan(basePath, subPath, config) {
     return [];
   }
 
-  const excludePatterns = (config.exclude_filenames || []).map((p) => new RegExp(p));
-  const excludeFolderPatterns = (config.exclude_folders || []).map((p) => new RegExp(p));
+  // Regex-Slashes entfernen falls User /pattern/ eingibt (JS-Schreibweise)
+  const stripSlashes = (p) => p.replace(/^\/|\/$/g, "");
+  const excludePatterns = (config.exclude_filenames || []).map((p) => new RegExp(stripSlashes(p)));
+  const excludeFolderPatterns = (config.exclude_folders || []).map((p) => new RegExp(stripSlashes(p)));
   const results = [];
 
   function walk(dir, depth) {

@@ -1,6 +1,10 @@
 # Filter-Referenz
 
-## Dateinamen ausschließen
+Muster können **mit oder ohne** umgebende Schrägstriche geschrieben werden — `/^@eaDir/` und `^@eaDir` funktionieren identisch.
+
+---
+
+# Dateinamen ausschließen
 
 Dateien, deren Name einem der eingetragenen Muster entspricht, werden beim Medienscan übersprungen. Das Muster wird gegen den **relativen Dateipfad** geprüft (inkl. Unterordner), so können auch Pfadbestandteile abgeglichen werden.
 
@@ -27,7 +31,7 @@ Schließt alle Dateien mit dieser Erweiterung aus. Nützlich um Formate zu block
 ### Regex – veraltete Videoformate
 
 ```
-/\.(avi|wmv|flv|rm|rmvb|3gp|asf|vob)$/i
+\.(avi|wmv|flv|rm|rmvb|3gp|asf|vob)$/i
 ```
 Überspringt Formate, die die meisten Browser nicht nativ abspielen können: AVI, WMV, Flash Video, RealMedia, 3GP, ASF, DVD-VOB.
 
@@ -36,7 +40,7 @@ Schließt alle Dateien mit dieser Erweiterung aus. Nützlich um Formate zu block
 ### Regex – HDR-Duplikate
 
 ```
-/^IMG_\d{8}_\d{6}_HDR/
+^IMG_\d{8}_\d{6}_HDR
 ```
 Überspringt HDR-Duplikate, die von Android-Kameras erstellt werden (z.B. `IMG_20240615_143022_HDR.jpg`).
 
@@ -45,27 +49,35 @@ Schließt alle Dateien mit dieser Erweiterung aus. Nützlich um Formate zu block
 ### Regex – Thumbnails
 
 ```
-/thumbnail|thumb|_small\./i
+thumbnail|thumb|_small\.
 ```
 Überspringt automatisch erzeugte Thumbnail-Varianten im gleichen Ordner.
 
 ---
 
-### Regex – versteckte Dateien und Systemdateien
+### Regex – versteckte Dateien (Dot-Dateien)
 
 ```
-/^\./
-/^@eaDir/
+^\.
 ```
-Überspringt Dot-Dateien (`.DS_Store`, `.nomedia`) und Synology-Thumbnail-Ordner (`@eaDir`).
+Überspringt versteckte Dateien wie `.DS_Store`, `.nomedia`, `.gitkeep`.
 
 ---
 
-## Ordner ausschließen
+# Ordner ausschließen
 
 Ordner, deren **Name** einem der eingetragenen Muster entspricht, werden vollständig übersprungen — einschließlich ihres gesamten Inhalts und aller Unterordner. Das Muster wird nur gegen den Ordnernamen geprüft, nicht gegen den vollständigen Pfad.
 
 > Das bedeutet: `Bildbearbeitung` wird überall im Ordnerbaum ausgeschlossen, egal ob unter `/data/media/Bildbearbeitung` oder `/data/media/2024/Bildbearbeitung`.
+
+### Synology-Systemordner (empfohlen!)
+
+```
+^@
+```
+Überspringt **alle** Ordner die mit `@` beginnen — erfasst damit `@eaDir` (Thumbnail-Cache), `@Recycle`, `@tmp` und alle anderen Synology-Systemordner auf einmal.
+
+---
 
 ### Exakter Ordnername
 
@@ -80,27 +92,19 @@ _temp
 ### Regex – Jahrgangs-Ausschluss (älter als 2022)
 
 ```
-/^(200[0-9]|201[0-9]|2020|2021)$/
+^(200[0-9]|201[0-9]|2020|2021)$
 ```
 Schließt alle Ordner aus, die 2000–2021 heißen.
 
 ---
 
-### Regex – Synology-Systemordner
-
-```
-/^@/
-```
-Überspringt alle Ordner die mit `@` beginnen (z.B. `@eaDir`, `@Recycle`, `@tmp`).
-
----
-
-## Wie Muster funktionieren
+# Wie Muster funktionieren
 
 | Eingabe | Behandelt als |
 |---|---|
-| `IMG_001.jpg` | Exakter Treffer (Groß-/Kleinschreibung beachten) |
+| `IMG_001.jpg` | Literaler String (Groß-/Kleinschreibung beachten) |
 | `*.jpg` | Wildcard: jeder Name der auf `.jpg` endet |
-| `/regex/flags` | Regulärer Ausdruck mit optionalen Flags (`i` = Groß-/Kleinschreibung ignorieren) |
+| `^@` | Regex: Namen die mit `@` beginnen |
+| `/^@/i` | Regex mit Flag: gleich, Groß-/Kleinschreibung ignorieren (Schrägstriche werden automatisch entfernt) |
 
-Muster werden intern als JavaScript-Regulärausdrücke angewendet. Ein einfacher String wie `IMG_001.jpg` wird als literaler Regex behandelt – Punkte treffen also auf beliebige Zeichen. Für einen strengen exakten Treffer `/^IMG_001\.jpg$/` verwenden.
+Muster werden intern als JavaScript-Regulärausdrücke angewendet. Ein einfacher String wie `IMG_001.jpg` wird als literaler Regex behandelt – Punkte treffen auf beliebige Zeichen. Für einen strengen exakten Treffer `^IMG_001\.jpg$` verwenden.

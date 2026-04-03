@@ -6,6 +6,7 @@
       @update:locale="currentLocale = $event"
       @save="saveAll"
       :status="saveStatus"
+      :restart-needed="restartNeeded"
       @toggle-theme="toggleTheme"
       @open-docs="showDocs = true"
     />
@@ -62,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AdminHeader from './components/AdminHeader.vue'
@@ -80,9 +81,9 @@ import Debug from './components/sections/Debug.vue'
 import Security from './components/sections/Security.vue'
 import SystemStatus from './components/sections/SystemStatus.vue'
 
-import { getConfig, saveConfig, getAuthStatus, restartServer } from './api.js'
+import { getConfig, saveConfig, getAuthStatus, getStatus } from './api.js'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 const config = ref(null)
 const currentLocale = ref(locale.value)
@@ -92,7 +93,42 @@ const showFilterHelp = ref(false)
 const showMediaHelp = ref(false)
 const showPinHelp = ref(false)
 const showPinLogin = ref(false)
+const restartNeeded = ref(false)
 const saveStatus = ref({ message: '', isError: false })
+
+// Restart-Erkennung: Banner verschwindet, wenn Server nach Neustart wieder erreichbar ist
+let restartWatchInterval = null
+let serverWasDown = false
+
+function startRestartWatch() {
+  if (restartWatchInterval) return
+  serverWasDown = false
+  restartWatchInterval = setInterval(async () => {
+    try {
+      await getStatus()
+      // Server ist erreichbar
+      if (serverWasDown) {
+        // War weg und ist jetzt wieder da → Neustart erkannt
+        restartNeeded.value = false
+        stopRestartWatch()
+      }
+    } catch {
+      serverWasDown = true
+    }
+  }, 3000)
+}
+
+function stopRestartWatch() {
+  if (restartWatchInterval) {
+    clearInterval(restartWatchInterval)
+    restartWatchInterval = null
+  }
+}
+
+watch(restartNeeded, (val) => {
+  if (val) startRestartWatch()
+  else stopRestartWatch()
+})
 
 // Theme-System
 const theme = ref(localStorage.getItem('wallpanel-theme') || 'dark')
@@ -145,13 +181,8 @@ async function saveAll() {
   if (!config.value) return
   try {
     await saveConfig(config.value)
-    showSaveStatus('Saving… restarting server.')
-    try {
-      await restartServer()
-      showSaveStatus('Settings saved. Server restarting…')
-    } catch {
-      showSaveStatus('Settings saved. (Restart failed – server may be offline)', true)
-    }
+    restartNeeded.value = true
+    showSaveStatus('✅ ' + t('status.savedRestartHint'))
   } catch (err) {
     showSaveStatus('Error saving settings: ' + err.message, true)
   }
@@ -160,6 +191,10 @@ async function saveAll() {
 onMounted(async () => {
   await checkAuth()
   await loadConfig()
+})
+
+onUnmounted(() => {
+  stopRestartWatch()
 })
 </script>
 

@@ -30,10 +30,7 @@
       <button type="button" class="action-btn log-btn" @click="showLogModal = true">
         📋 {{ $t('buttons.viewLog') }}
       </button>
-      <button type="button" class="action-btn warn-btn" :disabled="restarting || stopping" @click="handleRestart">
-        {{ restarting ? $t('status.restarting') : ('🔄 ' + $t('buttons.restart')) }}
-      </button>
-      <button v-if="!status?.isDocker" type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleStop">
+      <button v-if="!status?.isDocker" type="button" class="action-btn danger" :disabled="stopping" @click="handleStop">
         {{ stopping ? '⏹️ Stopping…' : ('🛑 ' + $t('buttons.stop')) }}
       </button>
       <div v-else class="docker-stop-hint">
@@ -64,15 +61,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getStatus, restartServer, stopServer } from '../../api.js'
+import { getStatus, stopServer } from '../../api.js'
 import LogModal from '../LogModal.vue'
 import iconUrl from '../../assets/app-logo.jpg'
 
 const { t } = useI18n()
 
-const status     = ref(null)
-const restarting = ref(false)
-const stopping   = ref(false)
+const status   = ref(null)
+const stopping = ref(false)
 const showLogModal = ref(false)
 let intervalId   = null
 
@@ -93,18 +89,6 @@ function formatTs(ts) {
 }
 
 function openSlideshow() { window.open('/', '_blank') }
-
-async function handleRestart() {
-  if (!window.confirm(t('system.restartConfirm'))) return
-  restarting.value = true
-  try {
-    await restartServer()
-  } catch { /* Verbindungsfehler erwartet beim Neustart */ }
-  setTimeout(async () => {
-    restarting.value = false
-    await loadStatus()
-  }, 3000)
-}
 
 async function handleStop() {
   if (!window.confirm('Stop the server process? In Docker with restart:unless-stopped the container will NOT restart automatically.')) return

@@ -132,9 +132,9 @@
   },
   "status": {
     "saved": "Settings saved successfully.",
+    "savedRestartHint": "Settings saved — please restart the server to apply.",
     "saveError": "Error saving settings.",
     "loading": "Loading...",
-    "restarting": "Server is restarting...",
     "restartError": "Error triggering restart.",
     "pinSet": "PIN has been set.",
     "pinSetError": "Error setting PIN.",
@@ -168,7 +168,8 @@
     "noErrors": "No errors recorded.",
     "restartConfirm": "Are you sure you want to restart the server? The slideshow will be briefly unavailable.",
     "reloadNote": "Opens the slideshow in a new browser tab.",
-    "dockerStopHint": "To permanently stop the container, use: docker stop <containername>"
+    "dockerStopHint": "To permanently stop the container, use: docker stop <containername>",
+    "restartBanner": "Settings saved — please restart the server to apply changes."
   },
   "header": {
     "appName": "MuralPicta"

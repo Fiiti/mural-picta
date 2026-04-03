@@ -5,6 +5,7 @@ const fs = require("fs");
 
 const apiRouter = require("./routes/api");
 const mediaRouter = require("./routes/media");
+const configService = require("./services/configService");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -54,7 +55,7 @@ app.use((err, req, res, _next) => {
 app.listen(PORT, () => {
   const isDocker = fs.existsSync("/.dockerenv");
   const configPath = path.resolve(__dirname, "../config");
-  const mediaPath  = "/data/media";
+  const mediaPath  = configService.load().media_base_path || "/data/media";
 
   console.log("=".repeat(55));
   console.log("  MuralPicta WallPanel Server");
@@ -73,7 +74,7 @@ app.listen(PORT, () => {
 
   // Medienpfad prüfen
   const mediaExists = fs.existsSync(mediaPath);
-  let mediaInfo = "NICHT vorhanden ✗ – Volume gemountet?";
+  let mediaInfo = isDocker ? "NICHT vorhanden ✗ – Volume gemountet?" : "NICHT vorhanden ✗ – Pfad in Admin → Media Source prüfen";
   if (mediaExists) {
     try {
       const entries = fs.readdirSync(mediaPath);

@@ -132,9 +132,9 @@
   },
   "status": {
     "saved": "Einstellungen erfolgreich gespeichert.",
+    "savedRestartHint": "Einstellungen gespeichert — Server neu starten, damit die Änderungen aktiv werden.",
     "saveError": "Fehler beim Speichern der Einstellungen.",
     "loading": "Wird geladen...",
-    "restarting": "Server wird neu gestartet...",
     "restartError": "Fehler beim Auslösen des Neustarts.",
     "pinSet": "PIN wurde gesetzt.",
     "pinSetError": "Fehler beim Setzen des PINs.",
@@ -168,7 +168,8 @@
     "noErrors": "Keine Fehler aufgezeichnet.",
     "restartConfirm": "Server wirklich neu starten? Die Diashow ist kurzzeitig nicht verfügbar.",
     "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab.",
-    "dockerStopHint": "Um den Container dauerhaft zu stoppen, verwende: docker stop <containername>"
+    "dockerStopHint": "Um den Container dauerhaft zu stoppen, verwende: docker stop <containername>",
+    "restartBanner": "Einstellungen gespeichert — bitte den Server neu starten, damit die Änderungen aktiv werden."
   },
   "header": {
     "appName": "MuralPicta"

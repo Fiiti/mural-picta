@@ -1,4 +1,5 @@
 <template>
+  <div class="header-wrapper">
   <header class="admin-header">
     <div class="header-left">
       <img :src="iconUrl" class="header-icon" alt="WallPanel Server" />
@@ -51,6 +52,10 @@
       </div>
     </div>
   </header>
+  <div v-if="restartNeeded" class="restart-banner">
+    🔄 {{ $t('system.restartBanner') }}
+  </div>
+  </div>
 </template>
 
 <script setup>
@@ -59,9 +64,10 @@ import { useI18n } from 'vue-i18n'
 import iconUrl from '../assets/app-icon.png'
 
 const props = defineProps({
-  locale:       { type: String, required: true },
-  currentTheme: { type: String, default: 'dark' },
-  status:       { type: Object, default: () => ({ message: '', isError: false }) }
+  locale:         { type: String, required: true },
+  currentTheme:   { type: String, default: 'dark' },
+  status:         { type: Object, default: () => ({ message: '', isError: false }) },
+  restartNeeded:  { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['update:locale', 'save', 'toggle-theme', 'open-docs'])
@@ -106,10 +112,28 @@ onUnmounted(() => { if (hbInterval) clearInterval(hbInterval) })
 </script>
 
 <style scoped>
-.admin-header {
+.header-wrapper {
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.restart-banner {
+  background: color-mix(in srgb, #e0a840 18%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, #e0a840 45%, transparent);
+  color: #e0a840;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  letter-spacing: 0.01em;
+  animation: fadeIn 0.3s ease;
+}
+
+.admin-header {
+  position: relative;
+  top: unset;
+  z-index: unset;
   display: flex;
   align-items: center;
   justify-content: space-between;
