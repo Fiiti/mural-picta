@@ -29,6 +29,11 @@ jobs:
       - name: Repository auschecken
         uses: actions/checkout@v4
 
+      # Kurzen Git-SHA für die Build-Kennung ermitteln (erste 7 Zeichen)
+      - name: Kurzen Git-SHA ermitteln
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       # Buildx aktivieren: ermöglicht Multi-Arch-Builds (amd64 + arm64)
       - name: Docker Buildx einrichten
         uses: docker/setup-buildx-action@v3
@@ -64,6 +69,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Git-SHA ins Image einbrennen → /api/status zeigt z. B. "1.0.0+a3f9c12"
+          build-args: BUILD_SHA=${{ steps.sha.outputs.short }}
           # GitHub Actions Cache nutzen → deutlich schnellere Folge-Builds
           cache-from: type=gha
           cache-to: type=gha,mode=max

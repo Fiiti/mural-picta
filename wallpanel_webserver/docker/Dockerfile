@@ -22,6 +22,11 @@ RUN npm run build:admin
 # ---- Stage 3: Minimales Runtime-Image ----
 FROM node:22-alpine AS runtime
 
+# Git-SHA wird vom CI als Build-Argument übergeben und als Umgebungsvariable eingebrannt.
+# Lokal (ohne --build-arg) bleibt der Wert leer → api.js zeigt dann nur "1.0.0".
+ARG BUILD_SHA=""
+ENV BUILD_SHA=$BUILD_SHA
+
 # OCI-Standard-Labels für Docker Hub und Registry-Metadaten
 LABEL org.opencontainers.image.title="MuralPicta WallPanel Server"
 LABEL org.opencontainers.image.description="Eigenständiger Bild- und Video-Diashow-Webserver für Wandpanels"

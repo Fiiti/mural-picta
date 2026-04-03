@@ -6,6 +6,10 @@ const configService = require("../services/configService");
 const mediaScanner = require("../services/mediaScanner");
 const geocodeService = require("../services/geocodeService");
 const { version } = require("../../package.json");
+// Im Docker-Image wird BUILD_SHA vom CI gesetzt → "1.0.0+a3f9c12", lokal bleibt "1.0.0"
+const displayVersion = process.env.BUILD_SHA
+  ? `${version}+${process.env.BUILD_SHA}`
+  : version;
 const crypto = require("crypto");
 
 // Einfaches Session-Flag fuer PIN-Authentifizierung (in-memory, reicht fuer lokalen Dienst)
@@ -96,7 +100,7 @@ router.get("/geocode", async (req, res) => {
 router.get("/status", (req, res) => {
   const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
   res.json({
-    version,
+    version: displayVersion,
     uptime: uptimeSeconds,
     recentErrors: recentErrors.slice(0, 20),
   });
