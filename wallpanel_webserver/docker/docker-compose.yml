@@ -1,65 +1,70 @@
-# MuralPicta WallPanel Server – Docker Compose
-# Dokumentation: https://github.com/TBD/mural-picta
+# MuralPicta WallPanel Server – Docker Compose (Synology-kompatibel)
 #
-# SCHNELLSTART:
-#   1. Kopiere .env.example zu .env und passe MEDIA_PATH an
-#   2. docker compose up -d
-#   3. Admin-Oberfläche: http://localhost:3000/admin
+# SCHNELLSTART SYNOLOGY:
+#   1. Erstelle auf der Synology den Ordner /volume1/docker/muralpicta/config
+#   2. Passe PUID/PGID auf deine Synology-Werte an (ermitteln mit: id)
+#      Typisch: uid=1026(deinUser) gid=100(users)
+#   3. Passe den Medienpfad unter volumes an
+#   4. docker compose up -d
+#   5. Admin-Oberfläche: http://synology-ip:3000/admin
 
 services:
   wallpanel:
-    # --- Image-Quelle ---
-    # Option A: Lokal aus dem Quellcode bauen (für Entwickler)
+    # Option A: Lokal bauen (Entwickler)
     build:
-      context: ..            # = wallpanel_webserver/ (ein Verzeichnis oberhalb)
+      context: ..
       dockerfile: docker/Dockerfile
 
-    # Option B: Fertiges Image von Docker Hub verwenden (für Endnutzer)
-    # Einfach Option A auskommentieren und diese Zeile einkommentieren:
+    # Option B: Fertiges Image von Docker Hub (Endnutzer)
     # image: galseq/mural-picta:latest
 
-    container_name: muralpicta
-    restart: unless-stopped
+    container_name: MuralPicta
+
+    # Synology-User: Container läuft mit denselben Rechten wie dein NAS-User.
+    # Ermittle deine Werte mit dem Synology Aufgabenplaner → Befehl: id
+    # Beispiel-Ausgabe: uid=1026(galmi) gid=100(users)
+    # → user: "1026:100"
+    user: "${PUID:-1026}:${PGID:-100}"
+
+    restart: on-failure:5
 
     ports:
-      # HOST_PORT:CONTAINER_PORT
-      # Ändere die linke Seite, wenn Port 3000 bereits belegt ist (z. B. "8080:3000")
       - "${PORT:-3000}:3000"
 
     volumes:
-      # --- Konfiguration (MUSS read-write sein, Admin speichert hier) ---
-      - wallpanel_config:/app/config
-      # Alternativ als Bind-Mount (direkter Dateizugriff auf dem Host):
-      # - ./config:/app/config
+      # --- Konfiguration (Bind-Mount: direkt auf dem NAS sichtbar und editierbar) ---
+      # Vorteil: PIN zurücksetzen, Backup, direkte Bearbeitung ohne Docker-Umweg
+      # Ordner muss vorher existieren: mkdir -p /volume1/docker/muralpicta/config
+      - /volume1/docker/muralpicta/config:/app/config:rw
 
       # -------------------------------------------------------
-      # MEDIENORDNER – wähle das passende Beispiel und passe an:
+      # MEDIENORDNER – passe den Pfad links an:
       # -------------------------------------------------------
+      # Einzelner Ordner (empfohlen für den Einstieg):
+      - /volume1/medien:/data/media:ro
 
-      # Einfach: Ein einzelner Ordner (empfohlen für den Einstieg)
-      # Setze MEDIA_PATH in der .env-Datei oder direkt hier:
-      - ${MEDIA_PATH:-/path/to/your/media}:/data/media:ro
+      # Mehrere Ordner parallel (alle erscheinen unter /data/media/...):
+      # - /volume1/fotos:/data/media/fotos:ro
+      # - /volume1/videos:/data/media/videos:ro
 
-      # Mehrere Jahres-Ordner parallel (alle unter /data/media sichtbar):
-      # - /volume1/2024:/data/media/2024:ro
-      # - /volume1/2025:/data/media/2025:ro
-      # - /volume1/2026:/data/media/2026:ro
+      # Jahres-Ordner:
+      # - /volume1/medien/2024:/data/media/2024:ro
+      # - /volume1/medien/2025:/data/media/2025:ro
+      # - /volume1/medien/2026:/data/media/2026:ro
 
-      # Fotos und Videos getrennt:
-      # - /volume1/photos:/data/media/photos:ro
-      # - /volume2/videos:/data/media/videos:ro
-
-      # Synology Beispiel (NAS-Freigabe bereits auf Synology gemountet):
-      # - /volume1/medien:/data/media:ro
-
-      # Nach dem Starten in Admin unter "Media Source" eintragen:
+      # Nach dem Start in Admin → "Media Source" eintragen:
       #   media_base_path = /data/media
-      # Der Scanner findet dann rekursiv alles darunter.
       # -------------------------------------------------------
 
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - TZ=Europe/Berlin
+
+    mem_limit: 512m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
 
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/status"]
@@ -67,8 +72,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
-
-# Named Volume für die Konfiguration.
-# Die Konfiguration bleibt erhalten, auch wenn der Container neu erstellt wird.
-volumes:
-  wallpanel_config:

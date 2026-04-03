@@ -42,15 +42,11 @@ COPY --from=builder /app/frontend       ./frontend
 COPY --from=builder /app/admin/dist     ./admin/dist
 COPY --from=builder /app/package.json   ./package.json
 
-# Non-root User (Sicherheitshärtung)
-# /app/config  → wird als Volume gemountet (read-write, Admin speichert config.json)
-# /data/media  → wird als Volume gemountet (read-only, NAS/Medienordner)
-RUN addgroup -g 1001 -S wallpanel && \
-    adduser  -S wallpanel -u 1001 -G wallpanel && \
-    mkdir -p /app/config /data/media && \
-    chown -R wallpanel:wallpanel /app/config
-
-USER wallpanel
+# Verzeichnisse anlegen und für beliebige User beschreibbar machen.
+# Der eigentliche User wird über PUID/PGID in docker-compose gesetzt (user: "1026:100").
+# So funktioniert der Container mit den Synology-eigenen UIDs ohne Permission-Probleme.
+RUN mkdir -p /app/config /data/media && \
+    chmod 777 /app/config /data/media
 
 EXPOSE 3000
 

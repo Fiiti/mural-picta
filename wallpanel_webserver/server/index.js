@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 
 const apiRouter = require("./routes/api");
 const mediaRouter = require("./routes/media");
@@ -51,6 +52,36 @@ app.use((err, req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`WallPanel Server läuft auf http://localhost:${PORT}`);
-  console.log(`Admin-Oberfläche: http://localhost:${PORT}/admin`);
+  const isDocker = fs.existsSync("/.dockerenv");
+  const configPath = path.resolve(__dirname, "../config");
+  const mediaPath  = "/data/media";
+
+  console.log("=".repeat(55));
+  console.log("  MuralPicta WallPanel Server");
+  console.log("=".repeat(55));
+  console.log(`  URL:        http://localhost:${PORT}`);
+  console.log(`  Admin:      http://localhost:${PORT}/admin`);
+  console.log(`  Umgebung:   ${isDocker ? "Docker" : "Direkt (npm start)"}`);
+  console.log(`  Node-User:  uid=${process.getuid?.() ?? "?"} gid=${process.getgid?.() ?? "?"}`);
+  console.log("-".repeat(55));
+
+  // Config-Pfad prüfen
+  const configFile = path.join(configPath, "config.json");
+  const configExists = fs.existsSync(configFile);
+  console.log(`  Config-Pfad:  ${configPath}`);
+  console.log(`  config.json:  ${configExists ? "gefunden ✓" : "NICHT gefunden – wird beim ersten Start erzeugt"}`);
+
+  // Medienpfad prüfen
+  const mediaExists = fs.existsSync(mediaPath);
+  let mediaInfo = "NICHT vorhanden ✗ – Volume gemountet?";
+  if (mediaExists) {
+    try {
+      const entries = fs.readdirSync(mediaPath);
+      mediaInfo = `vorhanden ✓ (${entries.length} Einträge sichtbar)`;
+    } catch (e) {
+      mediaInfo = `vorhanden, aber kein Lesezugriff ✗ (${e.code}) – PUID/PGID prüfen!`;
+    }
+  }
+  console.log(`  Medienpfad:   ${mediaPath} → ${mediaInfo}`);
+  console.log("=".repeat(55));
 });
