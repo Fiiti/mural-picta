@@ -110,7 +110,7 @@
   },
   "buttons": {
     "save": "Einstellungen speichern",
-    "reload": "Diashow neu laden",
+    "reload": "Diashow öffnen",
     "restart": "Server neu starten",
     "stop": "Server stoppen",
     "openHelp": "❓ Template-Hilfe",
@@ -167,7 +167,8 @@
     "recentErrors": "Letzte Fehler",
     "noErrors": "Keine Fehler aufgezeichnet.",
     "restartConfirm": "Server wirklich neu starten? Die Diashow ist kurzzeitig nicht verfügbar.",
-    "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab."
+    "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab.",
+    "dockerStopHint": "Um den Container dauerhaft zu stoppen, verwende: docker stop <containername>"
   },
   "header": {
     "appName": "MuralPicta"

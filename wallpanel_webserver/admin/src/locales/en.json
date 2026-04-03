@@ -110,7 +110,7 @@
   },
   "buttons": {
     "save": "Save Settings",
-    "reload": "Reload Slideshow",
+    "reload": "Open Slideshow",
     "restart": "Restart Server",
     "stop": "Stop Server",
     "openHelp": "❓ Template Help",
@@ -167,7 +167,8 @@
     "recentErrors": "Recent Errors",
     "noErrors": "No errors recorded.",
     "restartConfirm": "Are you sure you want to restart the server? The slideshow will be briefly unavailable.",
-    "reloadNote": "Opens the slideshow in a new browser tab."
+    "reloadNote": "Opens the slideshow in a new browser tab.",
+    "dockerStopHint": "To permanently stop the container, use: docker stop <containername>"
   },
   "header": {
     "appName": "MuralPicta"

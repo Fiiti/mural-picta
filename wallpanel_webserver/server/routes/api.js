@@ -18,6 +18,7 @@ const authenticatedSessions = new Set();
 
 const startTime = Date.now();
 const recentErrors = [];
+const isDocker = require("fs").existsSync("/.dockerenv");
 
 // Fehler global sammeln (max. 50 Einträge)
 function logError(msg) {
@@ -102,6 +103,7 @@ router.get("/status", (req, res) => {
   res.json({
     version: displayVersion,
     uptime: uptimeSeconds,
+    isDocker,
     recentErrors: recentErrors.slice(0, 20),
   });
 });

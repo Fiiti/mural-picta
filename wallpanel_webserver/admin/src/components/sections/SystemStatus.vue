@@ -24,7 +24,7 @@
 
     <!-- Aktionen -->
     <div class="actions">
-      <button type="button" class="action-btn reload-btn" @click="openSlideshow" :title="$t('system.reloadNote')">
+      <button type="button" class="action-btn reload-btn" @click="openSlideshow">
         🖼️ {{ $t('buttons.reload') }}
       </button>
       <button type="button" class="action-btn log-btn" @click="showLogModal = true">
@@ -33,10 +33,12 @@
       <button type="button" class="action-btn warn-btn" :disabled="restarting || stopping" @click="handleRestart">
         {{ restarting ? $t('status.restarting') : ('🔄 ' + $t('buttons.restart')) }}
       </button>
-      <button type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleStop"
-        title="Stops the server process. In Docker the container will NOT restart.">
+      <button v-if="!status?.isDocker" type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleStop">
         {{ stopping ? '⏹️ Stopping…' : ('🛑 ' + $t('buttons.stop')) }}
       </button>
+      <div v-else class="docker-stop-hint">
+        🐳 {{ $t('system.dockerStopHint') }}
+      </div>
     </div>
 
     <!-- Letzte Fehler (Kurzübersicht) -->
@@ -223,6 +225,17 @@ h3 {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.6rem;
   margin-bottom: 1.5rem;
+}
+
+.docker-stop-hint {
+  grid-column: span 2;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  line-height: 1.5;
 }
 
 .action-btn {
