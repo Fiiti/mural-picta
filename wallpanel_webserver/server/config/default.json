@@ -15,6 +15,7 @@
   "info_position": "bottom-right",
   "fetch_address_data": false,
   "exclude_filenames": [],
+  "exclude_folders": [],
   "video_loop": false,
   "video_volume": 0,
   "admin_pin": null

@@ -41,12 +41,10 @@
       </button>
     </div>
 
-    <!-- PIN-Recovery-Hinweis -->
-    <div class="recovery-hint">
-      <strong>{{ $t('pin.forgotTitle') }}</strong><br>
-      {{ $t('pin.forgotHint') }}<br>
-      <code>config/config.json</code> → set <code>"admin_pin_hash"</code> to <code>null</code>
-    </div>
+    <!-- PIN-Recovery -->
+    <button class="help-btn" type="button" @click="$emit('open-help')">
+      🔑 {{ $t('buttons.openPinHelp') }}
+    </button>
   </section>
 </template>
 
@@ -54,6 +52,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getAuthStatus, setPin, removePin } from '../../api.js'
+
+defineEmits(['open-help'])
 
 const { t } = useI18n()
 
@@ -255,25 +255,21 @@ input:focus { border-color: var(--input-focus); }
   margin-bottom: 1rem;
 }
 
-/* PIN-Recovery-Hinweis */
-.recovery-hint {
-  margin-top: 1.2rem;
-  padding: 0.75rem 1rem;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-.recovery-hint strong { color: var(--text); }
-.recovery-hint code {
-  background: var(--card-bg);
+.help-btn {
+  margin-top: 1rem;
+  padding: 0.38rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
   color: var(--accent);
-  padding: 0.1em 0.35em;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 0.82em;
-  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.help-btn:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
 }
 </style>

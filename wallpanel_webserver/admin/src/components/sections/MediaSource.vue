@@ -69,19 +69,10 @@
       <p class="hint">Number of media files currently available from the configured path.</p>
     </div>
 
-    <!-- Block C: Volume Mapping Info -->
-    <div class="info-box">
-      <strong>Docker Volume Mapping</strong>
-      <p>Mount your NAS or local folder into the container. The path inside the container is what you enter as <em>Media Base Path</em> above.</p>
-      <pre class="code-snippet">volumes:
-  - /volume1/photos:/data/media:ro
-# media_base_path = /data/media
-
-# Multiple folders:
-  - /volume1/2024:/data/media/2024:ro
-  - /volume1/2025:/data/media/2025:ro</pre>
-      <p class="hint">See <code>docker/docker-compose.yml</code> for full examples.</p>
-    </div>
+    <!-- Block C: Volume Mapping Hilfe -->
+    <button class="help-btn" type="button" @click="$emit('open-help')">
+      {{ $t('buttons.openMediaHelp') }}
+    </button>
   </section>
 </template>
 
@@ -90,7 +81,7 @@ import { ref, onMounted } from 'vue'
 import { testMediaSource, getMediaCount } from '../../api.js'
 
 const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'open-help'])
 
 function update(key, value) {
   emit('update:modelValue', { ...props.modelValue, [key]: value })
@@ -227,28 +218,21 @@ select:focus {
   font-family: monospace;
 }
 
-.info-box {
-  margin-top: 1.25rem;
-  background: color-mix(in srgb, var(--accent) 6%, var(--card-bg));
-  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-  border-radius: 8px;
-  padding: 1rem 1.1rem;
-  font-size: 0.82rem;
+.help-btn {
+  margin-top: 0.75rem;
+  padding: 0.38rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent);
+  border-radius: 7px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.info-box strong { display: block; margin-bottom: 0.4rem; font-size: 0.83rem; }
-.info-box p { color: var(--text-muted); margin: 0.3rem 0; line-height: 1.5; }
-
-.code-snippet {
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.6rem 0.8rem;
-  font-size: 0.78rem;
-  font-family: monospace;
-  line-height: 1.55;
-  white-space: pre;
-  overflow-x: auto;
-  margin: 0.5rem 0;
-  color: var(--text);
+.help-btn:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
 }
 </style>

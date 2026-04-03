@@ -93,7 +93,11 @@
     },
     "exclude_filenames": {
       "label": "Dateinamen ausschließen",
-      "hint": "Dateien, die einem dieser Muster entsprechen, werden von der Diashow ausgeschlossen. Unterstützt genaue Dateinamen oder reguläre Ausdrücke. Enter oder Komma zum Hinzufügen."
+      "hint": "Enter oder Komma fügt neuen Eintrag hinzu.<br>Dateien, die einem dieser Muster entsprechen, werden von der Diashow ausgeschlossen. Unterstützt genaue Dateinamen oder reguläre Ausdrücke."
+    },
+    "exclude_folders": {
+      "label": "Ordner ausschließen",
+      "hint": "Enter oder Komma fügt neuen Eintrag hinzu.<br>Ordner, die einem dieser Muster entsprechen, werden komplett übersprungen (inkl. ihres gesamten Inhalts). Trifft auf den Ordnernamen, nicht auf den vollständigen Pfad."
     },
     "debug_mode": {
       "label": "Debug-Modus aktivieren",
@@ -109,7 +113,10 @@
     "reload": "Diashow neu laden",
     "restart": "Server neu starten",
     "stop": "Server stoppen",
-    "openHelp": "? Template-Hilfe",
+    "openHelp": "❓ Template-Hilfe",
+    "openFilterHelp": "❓ Filter-Hilfe",
+    "openMediaHelp": "❓ Volume-Mapping-Hilfe",
+    "openPinHelp": "PIN vergessen?",
     "setPin": "PIN setzen",
     "changePin": "PIN ändern",
     "removePin": "PIN-Schutz entfernen",
@@ -151,7 +158,7 @@
     "loginPrompt": "Dieses Admin-Panel ist mit einem PIN geschützt.",
     "enterPin": "PIN eingeben",
     "forgotTitle": "PIN vergessen?",
-    "forgotHint": "Bearbeite die Konfigurationsdatei auf dem Server und setze admin_pin_hash auf null:"
+    "forgotHint": "Bearbeite die Konfigurationsdatei auf dem Server:"
   },
   "system": {
     "version": "Version",

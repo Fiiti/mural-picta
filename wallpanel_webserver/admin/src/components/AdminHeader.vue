@@ -56,7 +56,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import iconUrl from '../assets/app-icon.jpg'
+import iconUrl from '../assets/app-icon.png'
 
 const props = defineProps({
   locale:       { type: String, required: true },

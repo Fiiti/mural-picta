@@ -13,7 +13,7 @@ import { marked } from 'marked'
 
 const props = defineProps({
   locale: { type: String, required: true },
-  type:   { type: String, default: 'template' }  // 'template' | 'docs'
+  type:   { type: String, default: 'template' }  // 'template' | 'docs' | 'filter' | 'media'
 })
 
 defineEmits(['close'])
@@ -22,7 +22,8 @@ const renderedContent = ref('')
 
 async function loadHelp() {
   const lang   = props.locale === 'de' ? 'de' : 'en'
-  const suffix = props.type === 'docs' ? 'docs' : 'template'
+  const allowed = ['template', 'docs', 'filter', 'media', 'pin']
+  const suffix = allowed.includes(props.type) ? props.type : 'template'
   const file   = `${lang}_${suffix}.md`
   try {
     const res = await fetch(`/admin/help/${file}`)

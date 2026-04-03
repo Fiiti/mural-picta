@@ -64,7 +64,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getStatus, restartServer, stopServer } from '../../api.js'
 import LogModal from '../LogModal.vue'
-import iconUrl from '../../assets/app-icon.jpg'
+import iconUrl from '../../assets/app-logo.jpg'
 
 const { t } = useI18n()
 
@@ -75,10 +75,13 @@ const showLogModal = ref(false)
 let intervalId   = null
 
 function formatUptime(seconds) {
-  const h = Math.floor(seconds / 3600)
+  const d = Math.floor(seconds / 86400)
+  const h = Math.floor((seconds % 86400) / 3600)
   const m = Math.floor((seconds % 3600) / 60)
   const s = seconds % 60
-  return `${h}h ${m}m ${s}s`
+  if (d > 0) return `${d}d ${h}h ${m}m`
+  if (h > 0) return `${h}h ${m}m ${s}s`
+  return `${m}m ${s}s`
 }
 
 function formatTs(ts) {
@@ -194,13 +197,12 @@ h3 {
 }
 
 .product-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
-  object-fit: cover;
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
   opacity: 0.88;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
+  align-self: flex-end;
 }
 
 .info-grid { margin-bottom: 1.2rem; }

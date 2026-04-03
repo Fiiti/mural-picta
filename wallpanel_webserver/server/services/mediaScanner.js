@@ -27,6 +27,7 @@ function scan(basePath, subPath, config) {
   }
 
   const excludePatterns = (config.exclude_filenames || []).map((p) => new RegExp(p));
+  const excludeFolderPatterns = (config.exclude_folders || []).map((p) => new RegExp(p));
   const results = [];
 
   function walk(dir, depth) {
@@ -45,6 +46,8 @@ function scan(basePath, subPath, config) {
       if (excludePatterns.some((rx) => rx.test(relativePath))) continue;
 
       if (entry.isDirectory()) {
+        // Ordner-Ausschluss: trifft nur auf den Ordnernamen (nicht den vollen Pfad)
+        if (excludeFolderPatterns.some((rx) => rx.test(entry.name))) continue;
         walk(fullPath, depth + 1);
       } else if (entry.isFile()) {
         const ext = path.extname(entry.name).toLowerCase();

@@ -14,15 +14,15 @@
 
     <main v-else class="content">
       <template v-if="config">
-        <MediaSource v-model="config" />
+        <MediaSource v-model="config" @open-help="showMediaHelp = true" />
         <Slideshow v-model="config" />
         <KenBurns v-model="config" />
         <InfoOverlay v-model="config" @open-help="showHelp = true" />
         <VideoSection v-model="config" />
         <Display v-model="config" />
-        <Filter v-model="config" />
+        <Filter v-model="config" @open-help="showFilterHelp = true" />
         <Debug v-model="config" />
-        <Security />
+        <Security @open-help="showPinHelp = true" />
         <SystemStatus />
       </template>
       <div v-else class="loading-state">{{ $t('status.loading') }}</div>
@@ -39,6 +39,24 @@
       :locale="currentLocale"
       type="docs"
       @close="showDocs = false"
+    />
+    <HelpModal
+      v-if="showFilterHelp"
+      :locale="currentLocale"
+      type="filter"
+      @close="showFilterHelp = false"
+    />
+    <HelpModal
+      v-if="showMediaHelp"
+      :locale="currentLocale"
+      type="media"
+      @close="showMediaHelp = false"
+    />
+    <HelpModal
+      v-if="showPinHelp"
+      :locale="currentLocale"
+      type="pin"
+      @close="showPinHelp = false"
     />
   </div>
 </template>
@@ -70,6 +88,9 @@ const config = ref(null)
 const currentLocale = ref(locale.value)
 const showHelp = ref(false)
 const showDocs = ref(false)
+const showFilterHelp = ref(false)
+const showMediaHelp = ref(false)
+const showPinHelp = ref(false)
 const showPinLogin = ref(false)
 const saveStatus = ref({ message: '', isError: false })
 
