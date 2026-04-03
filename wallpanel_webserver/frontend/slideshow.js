@@ -18,9 +18,11 @@ let appVersion = "";
 const slotA = document.getElementById("slot-a");
 const slotB = document.getElementById("slot-b");
 const progressBar = document.getElementById("progress-bar");
-const infoOverlay = document.getElementById("info-overlay");
 const debugOverlay = document.getElementById("debug-overlay");
 const loadingScreen = document.getElementById("loading");
+
+// Info-Position aus Config – wird beim Erstellen jedes Slot-Info-Divs gesetzt
+let infoPosition = "bottom-right";
 
 // ── Initialisierung ───────────────────────────────────────────────────────────
 async function init() {
@@ -85,12 +87,8 @@ function applyCssVariables() {
   document.documentElement.style.setProperty("--image-fit", config.image_fit || "cover");
   document.documentElement.style.setProperty("--kb-zoom", config.ken_burns_zoom || 1.3);
 
-  // Info-Overlay Position
-  if (config.info_position) {
-    infoOverlay.className = "pos-" + config.info_position;
-  } else {
-    infoOverlay.className = "pos-bottom-right";
-  }
+  // Info-Position für spätere Slot-Erstellung merken
+  infoPosition = "pos-" + (config.info_position || "bottom-right");
 }
 
 // ── Medien-Wechsel ────────────────────────────────────────────────────────────
@@ -111,8 +109,8 @@ function showNextMedia(isFirst = false) {
     inactiveEl.classList.add("active");
     activeSlot = inactiveSlot;
 
-    // Overlays aktualisieren (Info + Debug teilen einen getMediaInfo-Aufruf)
-    loadAndDisplayOverlays(item);
+    // ITemp in den neuen Slot laden – fadert automatisch mit dem Slot mit
+    loadAndDisplayOverlays(item, inactiveEl);
 
     // Ken Burns starten
     if (config.ken_burns_enabled && item.type === "image") {
@@ -124,14 +122,11 @@ function showNextMedia(isFirst = false) {
       }
     }
 
-    // Fortschrittsbalken mit Verzögerung starten:
-    // Erst nach crossfade_time beginnen, damit der Balken bei 0% startet
-    // wenn das Bild vollständig sichtbar ist – und bei 100% ankommt
-    // genau wenn das nächste Bild vollständig eingeblendet wurde.
+    // Fortschrittsbalken sofort beim Crossfade-Start auf 0% setzen.
+    // Läuft genau display_time Sekunden → erreicht 100% wenn das nächste Bild beginnt.
     if (config.show_progress_bar) {
       if (progressBarTimer) clearTimeout(progressBarTimer);
-      const crossfadeMs = Math.round((config.crossfade_time || 0) * 1000);
-      progressBarTimer = setTimeout(() => restartProgressBar(item), crossfadeMs);
+      restartProgressBar(item);
     }
 
     // Timer für nächstes Medium
@@ -144,30 +139,30 @@ function showNextMedia(isFirst = false) {
 }
 
 // ── Overlays (Info + Debug) ───────────────────────────────────────────────────
-async function loadAndDisplayOverlays(item) {
+// slotEl = der Slot, der gerade aktiv wurde. Das ITemp wird in dessen .slot-info
+// geschrieben und fadert automatisch mit dem Slot-opacity mit.
+async function loadAndDisplayOverlays(item, slotEl) {
+  const infoEl = slotEl ? slotEl.querySelector(".slot-info") : null;
   const needsInfo = (config.show_image_info && config.image_info_template) || config.debug_mode;
 
-  infoOverlay.style.opacity = "0";
   if (debugOverlay) debugOverlay.style.display = "none";
 
   if (!needsInfo) {
-    infoOverlay.innerHTML = "";
+    if (infoEl) infoEl.innerHTML = "";
     return;
   }
 
   try {
     const mediaInfo = await getMediaInfo(item, config.fetch_address_data || false);
 
-    // Info-Overlay
-    if (config.show_image_info && config.image_info_template) {
-      const html = renderTemplate(config.image_info_template, mediaInfo);
-      infoOverlay.innerHTML = html;
-      if (html.trim()) infoOverlay.style.opacity = "1";
-    } else {
-      infoOverlay.innerHTML = "";
+    // Info in den Slot schreiben (fadert mit Bild mit)
+    if (infoEl && config.show_image_info && config.image_info_template) {
+      infoEl.innerHTML = renderTemplate(config.image_info_template, mediaInfo);
+    } else if (infoEl) {
+      infoEl.innerHTML = "";
     }
 
-    // Debug-Overlay
+    // Debug-Overlay bleibt global (Entwicklerwerkzeug)
     if (config.debug_mode && debugOverlay) {
       debugOverlay.innerHTML = buildDebugHtml(item, mediaInfo);
       debugOverlay.style.display = "block";
@@ -218,6 +213,11 @@ function getDisplayTimeMs(item) {
 function loadMediaIntoSlot(slotEl, item, onReady) {
   // Alten Inhalt entfernen
   slotEl.innerHTML = "";
+
+  // Pro-Slot Info-Overlay erzeugen (fadert mit dem Slot mit)
+  const infoEl = document.createElement("div");
+  infoEl.className = "slot-info " + infoPosition;
+  slotEl.appendChild(infoEl);
 
   if (item.type === "image") {
     const img = document.createElement("img");

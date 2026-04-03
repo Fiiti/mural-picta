@@ -339,7 +339,7 @@ onUnmounted(() => { if (hbInterval) clearInterval(hbInterval) })
 .hb-dot.ok {
   background: #4caf7d;
   opacity: 1;
-  animation: hb-pulse 2.5s ease-in-out infinite;
+  animation: hb-pulse 2s ease-in-out infinite;
 }
 
 .hb-dot.warning {
@@ -353,7 +353,7 @@ onUnmounted(() => { if (hbInterval) clearInterval(hbInterval) })
 }
 
 @keyframes hb-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 125, 0.5); opacity: 1; }
-  50%       { box-shadow: 0 0 0 4px rgba(76, 175, 125, 0); opacity: 0.65; }
+  0%, 100% { background: #4caf7d; }
+  50%       { background: #555568; }
 }
 </style>

@@ -24,18 +24,18 @@
 
     <!-- Aktionen -->
     <div class="actions">
-      <button type="button" class="action-btn" @click="openSlideshow" :title="$t('system.reloadNote')">
-        {{ $t('buttons.reload') }}
+      <button type="button" class="action-btn reload-btn" @click="openSlideshow" :title="$t('system.reloadNote')">
+        🖼️ {{ $t('buttons.reload') }}
       </button>
       <button type="button" class="action-btn log-btn" @click="showLogModal = true">
         📋 {{ $t('buttons.viewLog') }}
       </button>
-      <button type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleRestart">
-        {{ restarting ? $t('status.restarting') : $t('buttons.restart') }}
+      <button type="button" class="action-btn warn-btn" :disabled="restarting || stopping" @click="handleRestart">
+        {{ restarting ? $t('status.restarting') : ('🔄 ' + $t('buttons.restart')) }}
       </button>
-      <button type="button" class="action-btn stop" :disabled="restarting || stopping" @click="handleStop"
+      <button type="button" class="action-btn danger" :disabled="restarting || stopping" @click="handleStop"
         title="Stops the server process. In Docker the container will NOT restart.">
-        {{ stopping ? 'Stopping…' : $t('buttons.stop') }}
+        {{ stopping ? '⏹️ Stopping…' : ('🛑 ' + $t('buttons.stop')) }}
       </button>
     </div>
 
@@ -217,8 +217,8 @@ h3 {
 .info-value { color: var(--text); font-weight: 500; font-family: monospace; }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.6rem;
   margin-bottom: 1.5rem;
 }
@@ -239,19 +239,26 @@ h3 {
 
 .log-btn { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 
+.action-btn.reload-btn {
+  background: rgba(40, 140, 70, 0.13);
+  border-color: rgba(40, 140, 70, 0.38);
+  color: #5cc87a;
+}
+.action-btn.reload-btn:hover:not(:disabled) { border-color: rgba(40, 140, 70, 0.72); }
+
+.action-btn.warn-btn {
+  background: rgba(200, 130, 20, 0.12);
+  border-color: rgba(200, 130, 20, 0.38);
+  color: #e0a840;
+}
+.action-btn.warn-btn:hover:not(:disabled) { border-color: rgba(200, 130, 20, 0.72); }
+
 .action-btn.danger {
   background: rgba(180, 50, 50, 0.12);
   border-color: rgba(180, 50, 50, 0.35);
   color: #e07070;
 }
 .action-btn.danger:hover:not(:disabled) { border-color: rgba(180, 50, 50, 0.7); }
-
-.action-btn.stop {
-  background: rgba(120, 60, 180, 0.10);
-  border-color: rgba(120, 60, 180, 0.30);
-  color: #b88ae0;
-}
-.action-btn.stop:hover:not(:disabled) { border-color: rgba(120, 60, 180, 0.65); }
 
 .errors-section {
   border-top: 1px solid var(--border);

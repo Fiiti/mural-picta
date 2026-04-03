@@ -64,32 +64,31 @@ html, body {
   transition: width linear;
 }
 
-/* ── Info-Overlay ─────────────────────────────────────────── */
-#info-overlay {
-  position: fixed;
-  z-index: 50;
+/* ── Info-Overlay (pro Slot – fadert mit dem Bild mit) ────── */
+/* .slot-info liegt innerhalb von .media-slot, dessen opacity-
+   Transition das komplette Ein-/Ausblenden übernimmt.          */
+.slot-info {
+  position: absolute;
+  z-index: 10;
   pointer-events: none;
-  /* Position per JS-Klasse steuerbar */
 }
 
-/* Alle Positionen spannen die volle Breite auf.
-   text-align im Template-HTML steuert die Ausrichtung. */
-#info-overlay.pos-bottom-right,
-#info-overlay.pos-bottom-left {
+.slot-info.pos-bottom-right,
+.slot-info.pos-bottom-left {
   bottom: 1em;
   left: 1em;
   right: 1em;
 }
-#info-overlay.pos-top-right,
-#info-overlay.pos-top-left {
+.slot-info.pos-top-right,
+.slot-info.pos-top-left {
   top: 1em;
   left: 1em;
   right: 1em;
 }
-#info-overlay.pos-bottom-right,
-#info-overlay.pos-top-right  { text-align: right; }
-#info-overlay.pos-bottom-left,
-#info-overlay.pos-top-left   { text-align: left; }
+.slot-info.pos-bottom-right,
+.slot-info.pos-top-right  { text-align: right; }
+.slot-info.pos-bottom-left,
+.slot-info.pos-top-left   { text-align: left; }
 
 /* ── Debug-Overlay ────────────────────────────────────────── */
 #debug-overlay {
@@ -110,13 +109,13 @@ html, body {
 #debug-overlay td { vertical-align: top; padding: 0; white-space: pre-wrap; }
 #debug-overlay td:first-child { opacity: 0.65; padding-right: 0.3em; }
 
-/* ── Info-Overlay Inhalt ──────────────────────────────────── */
-#info-overlay {
+/* ── Info-Overlay Textgestaltung ──────────────────────────── */
+.slot-info {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.85em;
   line-height: 1.5;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: opacity 0.5s ease;
+  /* Kein eigenes opacity-transition: der Slot-Fade übernimmt alles */
 }
 
 /* ── Lademeldung ──────────────────────────────────────────── */
