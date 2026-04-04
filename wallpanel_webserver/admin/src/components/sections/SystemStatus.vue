@@ -14,7 +14,12 @@
     <div v-if="status" class="info-grid">
       <div class="info-row">
         <span class="info-label">{{ $t('system.version') }}</span>
-        <span class="info-value">{{ status.version }}</span>
+        <span class="info-value version-cell">
+          {{ status.version }}
+          <span v-if="newVersion" class="update-chip" :title="$t('system.updateAvailable', { v: newVersion })">
+            🆕 v{{ newVersion }}
+          </span>
+        </span>
       </div>
       <div class="info-row">
         <span class="info-label">{{ $t('system.uptime') }}</span>
@@ -67,10 +72,45 @@ import iconUrl from '../../assets/app-logo.jpg'
 
 const { t } = useI18n()
 
-const status   = ref(null)
-const stopping = ref(false)
+const status       = ref(null)
+const stopping     = ref(false)
 const showLogModal = ref(false)
-let intervalId   = null
+const newVersion   = ref(null)
+let intervalId     = null
+
+const REPO = 'Fiiti/mural-picta'
+
+function parseSemver(v) {
+  return (v || '').replace(/^v/, '').split('+')[0].split('.').map(Number)
+}
+
+function isNewer(latest, current) {
+  const [la, lb = 0, lc = 0] = parseSemver(latest)
+  const [ca, cb = 0, cc = 0] = parseSemver(current)
+  if (la !== ca) return la > ca
+  if (lb !== cb) return lb > cb
+  return lc > cc
+}
+
+async function checkForUpdates() {
+  try {
+    let latestTag = null
+    // Releases zuerst, dann Tags als Fallback
+    const relRes = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
+    if (relRes.ok) {
+      latestTag = (await relRes.json()).tag_name
+    } else {
+      const tagRes = await fetch(`https://api.github.com/repos/${REPO}/tags`)
+      if (tagRes.ok) {
+        const tags = await tagRes.json()
+        if (tags.length > 0) latestTag = tags[0].name
+      }
+    }
+    if (latestTag && status.value?.version && isNewer(latestTag, status.value.version)) {
+      newVersion.value = latestTag.replace(/^v/, '')
+    }
+  } catch { /* kein Internet oder GitHub-Limit */ }
+}
 
 function formatUptime(seconds) {
   const d = Math.floor(seconds / 86400)
@@ -101,8 +141,9 @@ async function loadStatus() {
   try { status.value = await getStatus() } catch { /* Server vielleicht neugestartet */ }
 }
 
-onMounted(() => {
-  loadStatus()
+onMounted(async () => {
+  await loadStatus()
+  checkForUpdates()
   intervalId = setInterval(loadStatus, 30000)
 })
 onUnmounted(() => { if (intervalId) clearInterval(intervalId) })
@@ -299,4 +340,27 @@ h3 {
 }
 
 .no-errors { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+
+.version-cell { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.update-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: color-mix(in srgb, #4caf7d 14%, transparent);
+  border: 1px solid color-mix(in srgb, #4caf7d 40%, transparent);
+  color: #4caf7d;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  font-family: inherit;
+  cursor: default;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
 </style>

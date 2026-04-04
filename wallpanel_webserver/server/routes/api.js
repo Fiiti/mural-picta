@@ -197,4 +197,61 @@ router.post("/remove-pin", (req, res) => {
   }
 });
 
+// ── Diashow-Fernsteuerung ─────────────────────────────────────────────────────
+// In-Memory-Steuerstatus; wird beim Server-Neustart zurückgesetzt
+const commandState = {
+  blank: false,    // Bildschirm schwarz
+  paused: false,   // Diashow pausiert
+  nextSeq: 0,      // Monoton steigend: "einmal vor"
+  prevSeq: 0,      // Monoton steigend: "einmal zurück"
+};
+
+// GET /api/command/state — aktuellen Steuerstatus abfragen (vom Frontend gepollt)
+router.get("/command/state", (req, res) => {
+  res.json(commandState);
+});
+
+// Alle Steuer-Endpunkte akzeptieren GET und POST
+// (GET = bequem per Browser testbar, POST = korrekte REST-Semantik für Skripte/HA)
+function cmdRoute(path, handler) {
+  router.get(path, handler);
+  router.post(path, handler);
+}
+
+// /api/command/blank — Bildschirm schwarz schalten
+cmdRoute("/command/blank", (req, res) => {
+  commandState.blank = true;
+  res.json({ ok: true });
+});
+
+// /api/command/unblank — Bildschirm wieder einschalten
+cmdRoute("/command/unblank", (req, res) => {
+  commandState.blank = false;
+  res.json({ ok: true });
+});
+
+// /api/command/pause — Diashow pausieren
+cmdRoute("/command/pause", (req, res) => {
+  commandState.paused = true;
+  res.json({ ok: true });
+});
+
+// /api/command/play — Diashow fortsetzen
+cmdRoute("/command/play", (req, res) => {
+  commandState.paused = false;
+  res.json({ ok: true });
+});
+
+// /api/command/next — ein Medium vorspringen (one-shot via Sequenznummer)
+cmdRoute("/command/next", (req, res) => {
+  commandState.nextSeq++;
+  res.json({ ok: true });
+});
+
+// /api/command/prev — ein Medium zurückspringen (one-shot via Sequenznummer)
+cmdRoute("/command/prev", (req, res) => {
+  commandState.prevSeq++;
+  res.json({ ok: true });
+});
+
 module.exports = router;

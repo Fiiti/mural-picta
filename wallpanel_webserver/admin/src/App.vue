@@ -29,16 +29,22 @@
       <div v-else class="loading-state">{{ $t('status.loading') }}</div>
     </main>
 
+    <footer class="app-footer">
+      Made with ♥ by
+      <a href="https://github.com/Fiiti/mural-picta" target="_blank" rel="noopener">Fiiti</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/Fiiti/mural-picta" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+
     <HelpModal
       v-if="showHelp"
       :locale="currentLocale"
       type="template"
       @close="showHelp = false"
     />
-    <HelpModal
+    <DocsModal
       v-if="showDocs"
       :locale="currentLocale"
-      type="docs"
       @close="showDocs = false"
     />
     <HelpModal
@@ -69,6 +75,7 @@ import { useI18n } from 'vue-i18n'
 import AdminHeader from './components/AdminHeader.vue'
 import PinLogin from './components/PinLogin.vue'
 import HelpModal from './components/HelpModal.vue'
+import DocsModal from './components/DocsModal.vue'
 
 import MediaSource from './components/sections/MediaSource.vue'
 import Slideshow from './components/sections/Slideshow.vue'
@@ -384,4 +391,21 @@ body {
   color: var(--text-muted);
   font-size: 0.95rem;
 }
+
+.app-footer {
+  text-align: center;
+  padding: 1.25rem 1rem 2rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+
+.app-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+.app-footer a:hover { opacity: 1; text-decoration: underline; }
 </style>

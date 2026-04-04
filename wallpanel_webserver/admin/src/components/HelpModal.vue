@@ -22,7 +22,7 @@ const renderedContent = ref('')
 
 async function loadHelp() {
   const lang   = props.locale === 'de' ? 'de' : 'en'
-  const allowed = ['template', 'docs', 'filter', 'media', 'pin']
+  const allowed = ['template', 'docs', 'filter', 'media', 'pin', 'api', 'overview']
   const suffix = allowed.includes(props.type) ? props.type : 'template'
   const file   = `${lang}_${suffix}.md`
   try {

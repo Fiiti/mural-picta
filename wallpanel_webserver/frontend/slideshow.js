@@ -14,6 +14,15 @@ let mediaListRefreshTimer = null;
 let isPaused = false;
 let appVersion = "";
 
+// ── Fernsteuerung (API-Polling) ───────────────────────────────────────────────
+let lastCmdState = { blank: false, paused: false, nextSeq: 0, prevSeq: 0 };
+let cmdPollTimer = null;
+// Blank-Screen-Overlay (reines CSS-Schwarz, kein Bild nötig)
+const blankOverlay = document.createElement("div");
+blankOverlay.style.cssText =
+  "display:none;position:fixed;inset:0;background:#000;z-index:9999;";
+document.body.appendChild(blankOverlay);
+
 // ── DOM-Referenzen ────────────────────────────────────────────────────────────
 const slotA = document.getElementById("slot-a");
 const slotB = document.getElementById("slot-b");
@@ -51,6 +60,9 @@ async function init() {
     hideLoading();
     showNextMedia(true);
     scheduleMediaListRefresh(mediaPath);
+
+    // Fernsteuerungs-Polling starten
+    cmdPollTimer = setInterval(pollCommandState, 2000);
   } catch (err) {
     showLoading("Fehler beim Starten: " + err.message);
     console.error(err);
@@ -273,7 +285,35 @@ function hideLoading() {
   loadingScreen.classList.add("hidden");
 }
 
-// ── Touch-Interaktion (einfach für M1) ───────────────────────────────────────
+// ── Pause / Play ─────────────────────────────────────────────────────────────
+function doPause() {
+  if (isPaused) return;
+  isPaused = true;
+  if (displayTimer) clearTimeout(displayTimer);
+  // Fortschrittsbalken einfrieren
+  const currentWidth = getComputedStyle(progressBar).width;
+  progressBar.style.transition = "none";
+  progressBar.style.width = currentWidth;
+  // Aktuelles Bild: Ken Burns stoppen + Vollbild-Fit (object-fit: contain)
+  const activeEl = activeSlot === "a" ? slotA : slotB;
+  const mediaEl = activeEl ? activeEl.querySelector("img, video") : null;
+  if (mediaEl) {
+    stopKenBurns(mediaEl);
+    mediaEl.style.objectFit = "contain";
+  }
+}
+
+function doPlay() {
+  if (!isPaused) return;
+  isPaused = false;
+  // Inline-Override zurücksetzen
+  const activeEl = activeSlot === "a" ? slotA : slotB;
+  const mediaEl = activeEl ? activeEl.querySelector("img, video") : null;
+  if (mediaEl) mediaEl.style.objectFit = "";
+  showNextMedia();
+}
+
+// ── Touch-Interaktion ─────────────────────────────────────────────────────────
 document.addEventListener("click", (e) => {
   const w = window.innerWidth;
   const x = e.clientX;
@@ -288,18 +328,45 @@ document.addEventListener("click", (e) => {
     showNextMedia();
   } else {
     // Mitte: Pause / Weiter
-    isPaused = !isPaused;
-    if (!isPaused) {
-      showNextMedia();
-    } else {
-      if (displayTimer) clearTimeout(displayTimer);
-      // Transition einfrieren: aktuelle Breite festhalten
-      const currentWidth = getComputedStyle(progressBar).width;
-      progressBar.style.transition = "none";
-      progressBar.style.width = currentWidth;
-    }
+    if (!isPaused) doPause();
+    else doPlay();
   }
 });
+
+// ── API-Fernsteuerung (Polling alle 2 s) ──────────────────────────────────────
+async function pollCommandState() {
+  try {
+    const res = await fetch("/api/command/state");
+    if (!res.ok) return;
+    const state = await res.json();
+
+    // Blank-Screen
+    blankOverlay.style.display = state.blank ? "block" : "none";
+
+    // Pause / Play: nur auf Änderungen im Server-State reagieren,
+    // damit lokaler Tap-Pause nicht vom Polling überschrieben wird
+    if (state.paused !== lastCmdState.paused) {
+      if (state.paused) doPause();
+      else doPlay();
+    }
+
+    // Vor (one-shot via Sequenznummer)
+    if (state.nextSeq > lastCmdState.nextSeq) {
+      lastCmdState.nextSeq = state.nextSeq;
+      if (displayTimer) clearTimeout(displayTimer);
+      showNextMedia();
+    }
+    // Zurück
+    if (state.prevSeq > lastCmdState.prevSeq) {
+      lastCmdState.prevSeq = state.prevSeq;
+      mediaIndex = (mediaIndex - 2 + mediaList.length) % mediaList.length;
+      if (displayTimer) clearTimeout(displayTimer);
+      showNextMedia();
+    }
+
+    lastCmdState = { ...state };
+  } catch {}
+}
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", init);

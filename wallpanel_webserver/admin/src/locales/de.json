@@ -169,6 +169,7 @@
     "restartConfirm": "Server wirklich neu starten? Die Diashow ist kurzzeitig nicht verfügbar.",
     "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab.",
     "dockerStopHint": "Um den Container dauerhaft zu stoppen, verwende: docker stop <containername>",
+    "updateAvailable": "Neue Version v{v} auf GitHub verfügbar!",
     "restartBanner": "Einstellungen gespeichert — bitte den Server neu starten, damit die Änderungen aktiv werden."
   },
   "header": {
