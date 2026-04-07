@@ -1,165 +1,133 @@
-# How to Install MuralPicta on a Synology NAS
+# MuralPicta – How to install on Synology
 
-This guide walks you through installing MuralPicta on a Synology NAS using **Container Manager** (DSM 7.2+). No SSH or command-line knowledge is required.
+Installing MuralPicta on a Synology NAS via Docker takes just a few minutes.
 
----
+## A great general resource for Synology installations
 
-## Prerequisites
+One of the best places to learn about Docker on Synology is [mariushosting.com](https://mariushosting.com/).
+His guides have helped countless users over the years — if you find his work useful, consider buying him a coffee.
+His work is truly remarkable and can save you hours of trial and error.
 
-- Synology NAS with DSM 7.2 or newer
-- **Container Manager** package installed (available in Package Center)
-- Your photos/videos are stored in a shared folder on the NAS (e.g. `photo`)
-
----
-
-## Step 1 – Create the Config Folder
-
-MuralPicta stores its configuration in a folder on the NAS. This folder must exist before the container starts.
-
-1. Open **File Station**
-2. Navigate to the `docker` shared folder  
-   *(if it does not exist, create it first: right-click → Create folder → name it `docker`)*
-3. Inside `docker`, create a new folder: `muralpicta`
-4. Inside `muralpicta`, create another folder: `config`
-
-The final path should be: `/volume1/docker/muralpicta/config`
-
-> **Why a bind mount?**  
-> Storing the config on the host means you can view and edit `config.json` directly in File Station — useful if you ever need to reset the admin PIN without SSH.
+**Installing via Portainer**  
+Marius describes the Portainer installation at [mariushosting.com](https://mariushosting.com/synology-30-second-portainer-install-using-task-scheduler-docker/).
+Portainer is a great alternative to Synology's built-in Container Manager. Both work fine — choose whichever feels more comfortable.
+For this guide, we use the built-in **Container Manager** as it requires no extra installation.
 
 ---
 
-## Step 2 – Open Container Manager
+## Step 1 – Prepare the folder structure
 
-1. Open **Container Manager** from the main menu
-2. Go to **Project** in the left sidebar
-3. Click **Create**
+Open **File Station** and create the following folder structure on your NAS:
+
+```
+/volume1/
+└── docker/
+    └── muralpicta/
+        └── config/
+```
+
+> Make sure to use lowercase for all folder names.
+
+Create the `docker` folder on the top level of your volume:
+
+<img src="add_docker_folder.png" alt="Create docker folder" width="400">
+<img src="insert_docker_name.png" alt="Name the folder 'docker'" width="400">
+
+Then open the `docker` folder and create a subfolder named `muralpicta`.  
+Inside that, create one more subfolder named `config`.
+
+The result should look like this:
+
+<img src="all_folder_added.png" alt="Final folder structure" width="400">
 
 ---
 
-## Step 3 – Create the Project
+## Step 2 – Create the stack in Container Manager
 
-1. **Project name:** `MuralPicta`
-2. **Path:** select or create `/docker/muralpicta` in the file picker
-3. **Source:** choose **Create docker-compose.yml**
-4. Paste the following into the editor:
+Open **Container Manager** → **Project** → **Create**.
+
+Give the project a name (e.g. `muralpicta`) and paste the contents of  
+[`docker/docker-compose.synology.yml`](../../wallpanel_webserver/docker/docker-compose.synology.yml)  
+into the compose editor.
+
+**Before saving**, adjust the media volume path to point to your actual photo/video share:
 
 ```yaml
-services:
-  wallpanel:
-    image: galseq/mural-picta:latest
-    container_name: MuralPicta
-    restart: on-failure:5
-    ports:
-      - "3123:3000"
-    volumes:
-      - /volume1/docker/muralpicta/config:/app/config:rw
-      - /volume1/photo:/data/media:ro
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - TZ=Europe/Berlin
-    mem_limit: 512m
-    cpu_shares: 512
-    security_opt:
-      - no-new-privileges:true
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/status"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
+volumes:
+  - /volume1/docker/muralpicta/config:/app/config:rw
+  - /volume1/photo:/data/media:ro   # ← change /volume1/photo to your share
 ```
 
-> **Adjust the volume path** `/volume1/photo` to match your actual photo shared folder.  
-> If your photos are in a different location (e.g. `/volume1/homes/admin/photos`), change that line accordingly.
+If port `3000` is already in use on your NAS, change the left side of the port mapping:
 
-5. Click **Next**, review the settings, then click **Done**
+```yaml
+ports:
+  - "3123:3000"   # ← use any free port
+```
 
-Container Manager will pull the image and start the container automatically.
+Click **Next** and then **Done** to start the container.
 
 ---
 
-## Step 4 – Open MuralPicta
+## Step 3 – Open the admin interface
 
-Once the container is running (green status):
+Once the container is running, open your browser and navigate to:
 
-| URL | Description |
-|-----|-------------|
-| `http://<NAS-IP>:3123` | Slideshow (open this on your wall panel / tablet) |
-| `http://<NAS-IP>:3123/admin` | Admin interface |
+```
+http://<NAS-IP>:3000/admin
+```
 
-Replace `<NAS-IP>` with your NAS's local IP address (e.g. `192.168.1.100`).  
-You can find it in DSM under **Control Panel → Network → Network Interface**.
+In the admin, go to **Media Sources** and set the **Media Base Path** to:
+
+```
+/data/media
+```
 
 ---
 
-## Step 5 – Configure the Media Path
+## Step 4 – Exclude Synology system folders
 
-1. Open the Admin interface: `http://<NAS-IP>:3123/admin`
-2. Go to **Media Source**
-3. Set **Media Base Path** to `/data/media`  
-   *(this is the internal container path mapped to your photos folder)*
-4. Click the **Test** button — it should show the number of images and videos found
-5. Click **Save** at the top, then restart the container
+Synology creates hidden working folders like `@eaDir` inside your photo directories.
+These contain thumbnails and metadata files that would otherwise appear in the slideshow.
 
----
-
-## Folder Structure Example
-
-If your photos are organised by year:
+To exclude them, go to **Admin → Filter & Exclusion** and add the following exclude pattern:
 
 ```
-/volume1/photo/
-├── 2024/
-│   ├── Summer/
-│   └── Christmas/
-├── 2025/
-└── 2026/
+^@
 ```
 
-Set `media_base_path` to `/data/media` — the scanner finds all files recursively.
+This hides all folders and files starting with `@`.
 
-To show only a specific year, open the slideshow with:  
-`http://<NAS-IP>:3123/?media_path=2026`
+> **Important:** Without this filter you will see low-resolution thumbnails and images without EXIF metadata (no GPS, no capture date).
 
 ---
 
 ## Updating MuralPicta
 
-To update to the latest version:
+To update to a new version:
 
-1. Open **Container Manager → Project → MuralPicta**
-2. Click **Action → Stop**
-3. Click **Action → Build** (this pulls the latest image)
-4. Click **Action → Start**
+1. Open **Container Manager** → **Registry** and pull the latest `galseq/mural-picta` image.
+2. Stop and re-deploy the project (Container Manager will use the new image automatically).
+3. Your configuration in `/volume1/docker/muralpicta/config` is preserved.
 
 ---
 
-## Resetting the Admin PIN
+## Resetting the PIN
 
-If you have forgotten the admin PIN:
+If you have forgotten your admin PIN, you can reset it by deleting or editing `config.json`:
 
-1. Open **File Station**
-2. Navigate to `/docker/muralpicta/config/`
-3. Open `config.json` with the text editor
-4. Find the line `"admin_pin": "..."` and change the value to `null`:
-   ```json
-   "admin_pin": null
-   ```
-5. Save the file
-6. Restart the container in Container Manager
-
-The PIN protection is now disabled. You can set a new PIN in the Admin interface under **Security**.
+1. Open **File Station** → `/docker/muralpicta/config/`
+2. Open `config.json` and remove the `"adminPin"` field (or set it to `""`)
+3. Restart the container — PIN protection is now disabled
 
 ---
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Container starts but shows no images | Check that the volume path `/volume1/photo` is correct and the folder is not empty |
-| "Permission denied" in container logs | The container runs as root by default — check that the shared folder has read permissions for **Everyone** |
-| Admin shows "no media found" | Verify the **Media Base Path** is set to `/data/media` in the admin |
-| Port 3123 already in use | Change `3123:3000` to a free port, e.g. `3456:3000` |
-| Container keeps restarting | Open **Container Manager → Container → MuralPicta → Log** to see the error |
+| Problem | Possible cause | Solution |
+|---|---|---|
+| Container fails to start | Config folder missing | Create `/volume1/docker/muralpicta/config` via File Station |
+| Media folder not accessible | Wrong volume path | Check the left side of the volume mount in the compose file |
+| Images show without GPS/date | `@eaDir` folders included | Add `^@` exclude filter in Admin → Filter |
+| Port already in use | Another service uses port 3000 | Change the left port number in the compose file |
+| Page not reachable | Firewall / port blocked | Check Synology firewall rules for the chosen port |

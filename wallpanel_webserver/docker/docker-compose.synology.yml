@@ -1,0 +1,59 @@
+# MuralPicta WallPanel Server – Docker Compose for Synology NAS
+#
+# QUICK START:
+#   1. Create the config folder via File Station: /docker/muralpicta/config
+#   2. Adjust the media volume path below to point to your photo/video share
+#   3. Paste this file into Synology Container Manager → Create Stack
+#   4. Open the admin interface: http://<NAS-IP>:3000/admin
+#
+# For a full step-by-step guide with screenshots, see:
+#   assets/synology/How_to_install_on_Synology.md
+
+services:
+  wallpanel:
+    image: galseq/mural-picta:latest
+    container_name: MuralPicta
+
+    # Synology Container Manager handles permissions automatically.
+    # The "user:" directive is intentionally omitted — it is not needed here.
+
+    restart: on-failure:5
+
+    ports:
+      # Change the left port (3000) if that port is already in use on your NAS.
+      # Example: "3123:3000" makes the app available on port 3123.
+      - "3000:3000"
+
+    volumes:
+      # Config folder – must exist before starting (create it via File Station)
+      - /volume1/docker/muralpicta/config:/app/config:rw
+
+      # -------------------------------------------------------
+      # MEDIA FOLDER – adjust the left path to your NAS share:
+      # -------------------------------------------------------
+      # Single folder (recommended for getting started):
+      - /volume1/photo:/data/media:ro
+
+      # Multiple folders mounted side by side (all visible under /data/media/...):
+      # - /volume1/photos/2024:/data/media/2024:ro
+      # - /volume1/photos/2025:/data/media/2025:ro
+      # - /volume1/photos/2026:/data/media/2026:ro
+      # -------------------------------------------------------
+      # After starting, set "media_base_path" to /data/media in the admin.
+
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - TZ=Europe/Berlin   # Adjust to your timezone if needed
+
+    mem_limit: 512m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

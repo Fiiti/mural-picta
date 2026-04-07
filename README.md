@@ -120,12 +120,16 @@ services:
 ```
 
 Adjust `/volume1/photo` to point to your actual photo/video share.  
-The slideshow will be available at `http://<NAS-IP>:3000`, the admin at `http://<NAS-IP>:3000/admin`.
-You may must adapt your Port e. g. to 3123. So change under `ports:` the line to `- "3123:3000"`
+The slideshow will be available at `http://<NAS-IP>:3000`, the admin at `http://<NAS-IP>:3000/admin`.  
+If port 3000 is already in use, change the left side of the port mapping, e.g. `- "3123:3000"`.  
+Adjust the timezone (`TZ`) if needed.
 
-To exclude unwanted internal Synology working folders such as `@eaDir` (these are normally hidden but would otherwise be displayed), simply add an exclude filter using `^@`. Otherwise, you’ll see images without GPS and capture data, and at very low resolutions!
+To exclude Synology’s internal working folders such as `@eaDir` (normally hidden, but would otherwise appear in the slideshow), add the exclude filter `^@` in **Admin → Filter**. Without it you will see low-resolution thumbnails and images without GPS or capture date.
 
-> For a step-by-step guide including screenshots, see  
+You can also use the ready-made compose file directly:  
+[`wallpanel_webserver/docker/docker-compose.synology.yml`](wallpanel_webserver/docker/docker-compose.synology.yml)
+
+> For a full step-by-step guide with screenshots, see  
 > [`assets/synology/How_to_install_on_Synology.md`](assets/synology/How_to_install_on_Synology.md)
 
 ## Multiple Media Folders
