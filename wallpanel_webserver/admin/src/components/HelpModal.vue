@@ -23,7 +23,7 @@ const renderedContent = ref('')
 async function loadHelp() {
   const supported = ['de', 'fr', 'es', 'it']
   const lang = supported.includes(props.locale) ? props.locale : 'en'
-  const allowed = ['image_overlay', 'docs', 'filter', 'media', 'pin', 'api', 'overview']
+  const allowed = ['image_overlay', 'filter', 'media', 'pin', 'api', 'overview']
   const suffix = allowed.includes(props.type) ? props.type : 'image_overlay'
   try {
     const res = await fetch(`/admin/help/${lang}/${suffix}.md`)

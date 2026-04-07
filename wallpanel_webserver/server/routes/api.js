@@ -83,8 +83,9 @@ router.get("/media-source/test", (req, res) => {
 
 // GET /api/geocode?lat=X&lon=Y
 router.get("/geocode", async (req, res) => {
-  const lat = parseFloat(req.query.lat);
-  const lon = parseFloat(req.query.lon);
+  // Auf 3 Dezimalstellen runden (~111 m Genauigkeit) – verbessert Cache-Trefferrate und schützt Privatsphäre
+  const lat = parseFloat(parseFloat(req.query.lat).toFixed(3));
+  const lon = parseFloat(parseFloat(req.query.lon).toFixed(3));
   if (isNaN(lat) || isNaN(lon)) {
     return res.status(400).json({ error: "lat/lon fehlt oder ungültig" });
   }

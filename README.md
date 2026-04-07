@@ -33,7 +33,7 @@ Runs entirely on your local network — no cloud, no subscription, no external s
 - Variables: filename, date, camera model, GPS coordinates, reverse-geocoded place name
 - GPS reverse geocoding via OpenStreetMap / Nominatim (cached, privacy-friendly) — optional; place-name language independently configurable
 - Configurable position (bottom-right, bottom-left, top-right, top-left)
-- ⚠️ **Privacy note:** This is the only part of the app that contacts the internet — it sends the GPS coordinates stored in the photo's EXIF data to Nominatim. Disable it in the Admin GUI if you need full privacy; the slideshow works without it.
+- ⚠️ **Privacy note:** This is the only part of the app that contacts the internet. GPS coordinates are rounded to 3 decimal places (~111 m accuracy) before being sent to Nominatim — your exact location is never transmitted. Results are cached server-side so each location is looked up only once. You can disable this feature entirely in the Admin GUI; the slideshow works without it.
 
 ### Touch & Remote Control
 - Tap left/right/center: previous / next / pause-resume
