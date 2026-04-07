@@ -54,10 +54,11 @@ Zeigt Informationen zum aktuellen Foto/Video auf dem Bild an — wie eine Bildun
 
 - **An/Aus** — Overlay aktivieren oder deaktivieren
 - **Position** — unten rechts, unten links, oben rechts, oben links
-- **Template** — vollständig anpassbares HTML-Template; kann Dateiname, Datum, GPS-Standort, Kameramodell und mehr anzeigen
+- **Bild-Overlay-Template** — vollständig anpassbares HTML-Template; kann Dateiname, Datum, GPS-Standort, Kameramodell und mehr anzeigen
 - **GPS-Standort abfragen** — löst GPS-Koordinaten aus EXIF-Daten in einen Ortsnamen auf (verwendet OpenStreetMap / Nominatim)
+- **Sprache der Ortsnamen** — Sprache für GPS-ermittelte Ortsnamen wählen (z. B. Deutsch, Englisch, Französisch) — unabhängig von der Admin-Oberflächensprache
 
-→ *Alle verfügbaren Template-Variablen und Beispiele in der Doku „Info Template".*
+→ *Alle verfügbaren Template-Variablen und Beispiele in der Doku „Bild Overlay".*
 
 ---
 

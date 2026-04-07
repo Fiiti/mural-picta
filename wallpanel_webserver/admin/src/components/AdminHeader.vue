@@ -29,6 +29,9 @@
       >
         <option value="en">🌐 EN</option>
         <option value="de">🌐 DE</option>
+        <option value="fr">🌐 FR</option>
+        <option value="es">🌐 ES</option>
+        <option value="it">🌐 IT</option>
       </select>
 
       <!-- Dark / Light Mode Toggle -->

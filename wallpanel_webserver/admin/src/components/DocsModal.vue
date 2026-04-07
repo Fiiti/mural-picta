@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { marked } from 'marked'
 
 const props = defineProps({
@@ -30,23 +30,25 @@ const props = defineProps({
 })
 defineEmits(['close'])
 
-const pages = [
-  { id: 'overview', label: '📖 Overview' },
-  { id: 'api',      label: 'API Reference' },
-  { id: 'template', label: 'Info Template' },
-  { id: 'filter',   label: 'Filter / Exclude' },
-  { id: 'media',    label: 'Media Sources' },
-  { id: 'pin',      label: 'PIN Reset' },
-]
+const overlayLabels = { de: 'Bild Overlay', fr: "Overlay d'image", es: 'Overlay de imagen', it: 'Overlay immagine' }
+
+const pages = computed(() => [
+  { id: 'overview',       label: '📖 Overview' },
+  { id: 'api',            label: 'API Reference' },
+  { id: 'image_overlay',  label: overlayLabels[props.locale] || 'Image Overlay' },
+  { id: 'filter',         label: 'Filter / Exclude' },
+  { id: 'media',          label: 'Media Sources' },
+  { id: 'pin',            label: 'PIN Reset' },
+])
 
 const activeId = ref('overview')
 const renderedContent = ref('')
 
 async function loadPage() {
-  const lang = props.locale === 'de' ? 'de' : 'en'
-  const file = `${lang}_${activeId.value}.md`
+  const supported = ['de', 'fr', 'es', 'it']
+  const lang = supported.includes(props.locale) ? props.locale : 'en'
   try {
-    const res = await fetch(`/admin/help/${file}`)
+    const res = await fetch(`/admin/help/${lang}/${activeId.value}.md`)
     const text = await res.text()
     renderedContent.value = marked.parse(text)
   } catch {

@@ -21,12 +21,12 @@ defineEmits(['close'])
 const renderedContent = ref('')
 
 async function loadHelp() {
-  const lang   = props.locale === 'de' ? 'de' : 'en'
-  const allowed = ['template', 'docs', 'filter', 'media', 'pin', 'api', 'overview']
-  const suffix = allowed.includes(props.type) ? props.type : 'template'
-  const file   = `${lang}_${suffix}.md`
+  const supported = ['de', 'fr', 'es', 'it']
+  const lang = supported.includes(props.locale) ? props.locale : 'en'
+  const allowed = ['image_overlay', 'docs', 'filter', 'media', 'pin', 'api', 'overview']
+  const suffix = allowed.includes(props.type) ? props.type : 'image_overlay'
   try {
-    const res = await fetch(`/admin/help/${file}`)
+    const res = await fetch(`/admin/help/${lang}/${suffix}.md`)
     const text = await res.text()
     renderedContent.value = marked.parse(text)
   } catch {

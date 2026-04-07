@@ -1,0 +1,184 @@
+{
+  "sections": {
+    "mediaSource": "Sorgente multimediale",
+    "slideshow": "Tempi del presentazione",
+    "kenBurns": "Effetto Ken Burns",
+    "infoOverlay": "Sovrapposizione informazioni",
+    "video": "Video",
+    "display": "Visualizzazione",
+    "filter": "Filtri",
+    "debug": "Debug",
+    "security": "Sicurezza",
+    "system": "Sistema e stato"
+  },
+  "fields": {
+    "media_base_path": {
+      "label": "Percorso base dei media",
+      "hint": "Percorso assoluto alla cartella contenente immagini e video. Tutte le sottocartelle fino a 5 livelli di profondità sono incluse ricorsivamente."
+    },
+    "media_list_update_interval": {
+      "label": "Intervallo di aggiornamento lista",
+      "hint": "Con quale frequenza ricostruire la lista dei media (in secondi, minimo 60). Particolarmente importante in modalità casuale."
+    },
+    "media_order": {
+      "label": "Ordine di riproduzione",
+      "hint": "Determina l'ordine in cui vengono visualizzati immagini e video.",
+      "options": {
+        "random": "Casuale",
+        "name": "Per nome file",
+        "date": "Per data"
+      }
+    },
+    "display_time_image": {
+      "label": "Tempo di visualizzazione per immagine (secondi)",
+      "hint": "Quanti secondi viene mostrata ogni immagine prima di passare alla successiva."
+    },
+    "display_time_video": {
+      "label": "Tempo di visualizzazione per video (secondi)",
+      "hint": "Quanti secondi viene mostrato ogni video. Se il video è più corto, verrà riprodotto in loop fino al raggiungimento di questo tempo."
+    },
+    "crossfade_time": {
+      "label": "Durata della dissolvenza incrociata (secondi)",
+      "hint": "Durata della transizione a dissolvenza tra gli elementi multimediali. Impostare 0 per disabilitare la dissolvenza."
+    },
+    "image_fit": {
+      "label": "Modalità adattamento immagine",
+      "hint": "Come vengono ridimensionate le immagini per riempire lo schermo.",
+      "options": {
+        "cover": "Coprire (riempie lo schermo, può ritagliare i bordi)",
+        "contain": "Contenere (mostra l'immagine intera, può mostrare bande nere)"
+      }
+    },
+    "ken_burns_enabled": {
+      "label": "Attiva effetto Ken Burns",
+      "hint": "Esegue lentamente una panoramica e uno zoom su immagini e video per un effetto cinematografico."
+    },
+    "ken_burns_zoom": {
+      "label": "Fattore di zoom Ken Burns",
+      "hint": "Livello massimo di zoom durante l'effetto Ken Burns (es. 1.3 = 130% della dimensione originale). Intervallo: 1.0 – 2.0."
+    },
+    "video_volume": {
+      "label": "Volume video",
+      "hint": "Volume di riproduzione per i video. 0 = disattivato, 1 = volume massimo."
+    },
+    "video_loop": {
+      "label": "Ripeti video in loop",
+      "hint": "Se attivato, i video verranno riprodotti in loop fino al raggiungimento del tempo di visualizzazione configurato."
+    },
+    "show_progress_bar": {
+      "label": "Mostra barra di avanzamento",
+      "hint": "Visualizza una sottile linea di avanzamento nella parte inferiore dello schermo che indica il tempo di visualizzazione rimanente."
+    },
+    "show_image_info": {
+      "label": "Mostra sovrapposizione informazioni",
+      "hint": "Visualizza i metadati dell'immagine (nome file, data, posizione) come sovrapposizione sulla presentazione."
+    },
+    "image_info_template": {
+      "label": "Modello di sovrapposizione",
+      "hint": "Modello HTML per la sovrapposizione. Usa variabili come ${filename}, ${DateTimeOriginal}, ${address.city} per inserire metadati. Clicca sul pulsante di aiuto per il riferimento completo."
+    },
+    "info_position": {
+      "label": "Posizione della sovrapposizione",
+      "hint": "Dove viene visualizzata la sovrapposizione informazioni sullo schermo.",
+      "options": {
+        "bottom-right": "In basso a destra",
+        "bottom-left": "In basso a sinistra",
+        "top-right": "In alto a destra",
+        "top-left": "In alto a sinistra"
+      }
+    },
+    "fetch_address_data": {
+      "label": "Recupera posizione dal GPS",
+      "hint": "Geocodifica inversamente le coordinate GPS dai dati EXIF dell'immagine tramite l'API Nominatim (OpenStreetMap). Richiede una connessione Internet."
+    },
+    "geocoding_language": {
+      "label": "Lingua dei nomi di luogo",
+      "hint": "Lingua per i nomi di luogo geocodificati (paese, città, ecc.). Indipendente dalla lingua dell'interfaccia di amministrazione."
+    },
+    "exclude_filenames": {
+      "label": "Escludi nomi file",
+      "hint": "Invio o virgola aggiunge una nuova voce.<br>I file corrispondenti a questi pattern verranno esclusi dalla presentazione. Supporta nomi esatti ed espressioni regolari."
+    },
+    "exclude_folders": {
+      "label": "Escludi cartelle",
+      "hint": "Invio o virgola aggiunge una nuova voce.<br>Le cartelle corrispondenti a questi pattern verranno ignorate completamente (incluso il loro contenuto). Corrisponde al nome della cartella, non al percorso completo."
+    },
+    "debug_mode": {
+      "label": "Attiva modalità debug",
+      "hint": "Mostra una sovrapposizione di debug con metadati EXIF, coordinate GPS, dati di indirizzo e informazioni sulla versione."
+    },
+    "admin_pin": {
+      "label": "Protezione PIN amministratore",
+      "hint": "Proteggi il pannello di amministrazione con un PIN alfanumerico (minimo 4 caratteri). Lascia vuoto per disabilitare la protezione."
+    }
+  },
+  "buttons": {
+    "save": "Salva impostazioni",
+    "reload": "Apri presentazione",
+    "restart": "Riavvia server",
+    "stop": "Arresta server",
+    "openHelp": "❓ Aiuto modelli",
+    "openFilterHelp": "❓ Aiuto filtri",
+    "openMediaHelp": "❓ Aiuto montaggio volumi",
+    "openPinHelp": "PIN dimenticato?",
+    "setPin": "Imposta PIN",
+    "changePin": "Cambia PIN",
+    "removePin": "Rimuovi protezione PIN",
+    "close": "Chiudi",
+    "login": "Accedi",
+    "viewLog": "Visualizza registro"
+  },
+  "log": {
+    "title": "Registro del server",
+    "live": "In diretta",
+    "noErrors": "Nessun errore registrato — il server funziona correttamente.",
+    "close": "Chiudi"
+  },
+  "status": {
+    "saved": "Impostazioni salvate con successo.",
+    "savedRestartHint": "Impostazioni salvate — riavvia il server per applicarle.",
+    "saveError": "Errore durante il salvataggio delle impostazioni.",
+    "loading": "Caricamento...",
+    "restartError": "Errore durante l'attivazione del riavvio.",
+    "pinSet": "Il PIN è stato impostato.",
+    "pinSetError": "Errore durante l'impostazione del PIN.",
+    "pinRemoved": "Protezione PIN rimossa.",
+    "pinRemoveError": "Errore durante la rimozione del PIN."
+  },
+  "pin": {
+    "title": "Protezione con codice PIN",
+    "status": "Stato",
+    "noPin": "Nessuna protezione PIN attiva. Chiunque può accedere a questo pannello.",
+    "pinActive": "La protezione PIN è attiva.",
+    "setPinTitle": "Imposta nuovo PIN",
+    "changePinTitle": "Cambia PIN",
+    "newPin": "Nuovo PIN (min. 4 caratteri, alfanumerico)",
+    "confirmPin": "Conferma PIN",
+    "pinMismatch": "I codici PIN non corrispondono.",
+    "pinTooShort": "Il PIN deve contenere almeno 4 caratteri.",
+    "pinInvalidChars": "Il PIN può contenere solo lettere e numeri.",
+    "wrongPin": "PIN errato, riprova.",
+    "loginTitle": "Accesso amministratore",
+    "loginPrompt": "Questo pannello di amministrazione è protetto da un PIN.",
+    "enterPin": "Inserisci PIN",
+    "forgotTitle": "PIN dimenticato?",
+    "forgotHint": "Modifica il file di configurazione sul server:"
+  },
+  "system": {
+    "version": "Versione",
+    "uptime": "Tempo di attività",
+    "uptimeFormat": "{h}h {m}m {s}s",
+    "recentErrors": "Errori recenti",
+    "noErrors": "Nessun errore registrato.",
+    "restartConfirm": "Sei sicuro di voler riavviare il server? La presentazione sarà brevemente non disponibile.",
+    "reloadNote": "Apre la presentazione in una nuova scheda del browser.",
+    "dockerStopHint": "Per arrestare definitivamente il container, usa: docker stop <nome_container>",
+    "upToDate": "Aggiornato",
+    "available": "disponibile",
+    "updateAvailable": "Nuova versione v{v} disponibile su GitHub!",
+    "restartBanner": "Impostazioni salvate — riavvia il server per applicare le modifiche."
+  },
+  "header": {
+    "appName": "MuralPicta"
+  }
+}

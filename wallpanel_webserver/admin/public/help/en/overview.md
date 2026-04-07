@@ -54,10 +54,11 @@ Displays information about the current photo/video on top of the image — like 
 
 - **Enable/Disable** — toggle the overlay
 - **Position** — bottom-right, bottom-left, top-right, top-left
-- **Template** — fully customisable HTML template; can show filename, date, GPS location, camera model, and more
+- **Image Overlay template** — fully customisable HTML template; can show filename, date, GPS location, camera model, and more
 - **Fetch GPS location** — resolves GPS coordinates from photo EXIF data to a place name (uses OpenStreetMap / Nominatim)
+- **Place name language** — choose the language for GPS-derived place names (e.g. English, German, French) — independent of the admin UI language
 
-→ *See the "Info Template" documentation for all available template variables and examples.*
+→ *See the "Image Overlay" documentation for all available template variables and examples.*
 
 ---
 

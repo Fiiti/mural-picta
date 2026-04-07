@@ -39,7 +39,7 @@
     <HelpModal
       v-if="showHelp"
       :locale="currentLocale"
-      type="template"
+      type="image_overlay"
       @close="showHelp = false"
     />
     <DocsModal
