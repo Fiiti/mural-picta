@@ -18,16 +18,22 @@ Runs entirely on your local network — no cloud, no subscription, no external s
 - Recursive file scanning across all subfolders (up to 5 levels deep)
 - Image fit modes: `cover`, `contain`, `fill`
 
+### Different Languages
+ - Supports de, en, es, fr & it in both the GUI and the help files. 
+    - The documentation is available either via the admin interface at `http://<yourwallpanelserver>:3000/admin` 
+    - or directly at github `wallpanel_webserver/admin/public/help/xx`.
+
 ### Media Sources
 - NAS / network drives via SMB or any mounted path (Synology, QNAP, UGREEN, FritzBox, Windows shares, etc.)
 - Multiple folders can be mounted side by side under a single base path
 - Path override via URL query parameter: `?media_path=2026/Summer`
 
-### Info Overlay
+### Advanced Info Overlay on each picture
 - Customisable HTML template displayed over each image
 - Variables: filename, date, camera model, GPS coordinates, reverse-geocoded place name
-- GPS reverse geocoding via OpenStreetMap / Nominatim (cached, privacy-friendly)
+- GPS reverse geocoding via OpenStreetMap / Nominatim (cached, privacy-friendly) — optional; place-name language independently configurable
 - Configurable position (bottom-right, bottom-left, top-right, top-left)
+- ⚠️ **Privacy note:** This is the only part of the app that contacts the internet — it sends the GPS coordinates stored in the photo's EXIF data to Nominatim. Disable it in the Admin GUI if you need full privacy; the slideshow works without it.
 
 ### Touch & Remote Control
 - Tap left/right/center: previous / next / pause-resume
