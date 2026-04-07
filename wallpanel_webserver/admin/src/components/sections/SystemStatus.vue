@@ -15,10 +15,17 @@
       <div class="info-row">
         <span class="info-label">{{ $t('system.version') }}</span>
         <span class="info-value version-cell">
-          {{ status.version }}
-          <span v-if="newVersion" class="update-chip" :title="$t('system.updateAvailable', { v: newVersion })">
-            🆕 v{{ newVersion }}
+          <span v-if="updateChecked && newVersion"
+                class="version-badge badge-update"
+                :title="$t('system.updateAvailable', { v: newVersion })">
+            ↑ v{{ newVersion }} {{ $t('system.available') }}
           </span>
+          <span v-else-if="updateChecked && !newVersion"
+                class="version-badge badge-current"
+                :title="$t('system.upToDate')">
+            ✓ {{ $t('system.upToDate') }}
+          </span>
+          {{ status.version }}
         </span>
       </div>
       <div class="info-row">
@@ -75,7 +82,8 @@ const { t } = useI18n()
 const status       = ref(null)
 const stopping     = ref(false)
 const showLogModal = ref(false)
-const newVersion   = ref(null)
+const newVersion     = ref(null)
+const updateChecked  = ref(false)
 let intervalId     = null
 
 const REPO = 'Fiiti/mural-picta'
@@ -109,7 +117,8 @@ async function checkForUpdates() {
     if (latestTag && status.value?.version && isNewer(latestTag, status.value.version)) {
       newVersion.value = latestTag.replace(/^v/, '')
     }
-  } catch { /* kein Internet oder GitHub-Limit */ }
+  } catch { /* no internet or GitHub rate limit */ }
+  finally { updateChecked.value = true }
 }
 
 function formatUptime(seconds) {
@@ -343,13 +352,10 @@ h3 {
 
 .version-cell { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
-.update-chip {
+.version-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  background: color-mix(in srgb, #4caf7d 14%, transparent);
-  border: 1px solid color-mix(in srgb, #4caf7d 40%, transparent);
-  color: #4caf7d;
   font-size: 0.72rem;
   font-weight: 600;
   padding: 0.15rem 0.55rem;
@@ -357,6 +363,16 @@ h3 {
   font-family: inherit;
   cursor: default;
   animation: fadeIn 0.4s ease;
+}
+.badge-current {
+  background: color-mix(in srgb, #4caf7d 14%, transparent);
+  border: 1px solid color-mix(in srgb, #4caf7d 35%, transparent);
+  color: #4caf7d;
+}
+.badge-update {
+  background: color-mix(in srgb, #f59e0b 14%, transparent);
+  border: 1px solid color-mix(in srgb, #f59e0b 45%, transparent);
+  color: #f59e0b;
 }
 
 @keyframes fadeIn {

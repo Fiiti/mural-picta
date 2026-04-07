@@ -13,6 +13,7 @@ let progressBarTimer = null;
 let mediaListRefreshTimer = null;
 let isPaused = false;
 let appVersion = "";
+let latestVersion = null; // null = not yet checked, "" = up to date, "x.x.x" = update available
 
 // ── Fernsteuerung (API-Polling) ───────────────────────────────────────────────
 let lastCmdState = { blank: false, paused: false, nextSeq: 0, prevSeq: 0 };
@@ -43,6 +44,24 @@ async function init() {
       const statusRes = await fetch("/api/status");
       if (statusRes.ok) appVersion = (await statusRes.json()).version || "";
     } catch {}
+
+    // GitHub-Update-Check (nur im Debug-Mode, non-blocking)
+    if (config.debug_mode) {
+      fetch("https://api.github.com/repos/Fiiti/mural-picta/releases/latest")
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          const tag = data?.tag_name?.replace(/^v/, "") || null;
+          if (tag && appVersion) {
+            const parse = v => v.split("+")[0].split(".").map(Number);
+            const [la,lb=0,lc=0] = parse(tag), [ca,cb=0,cc=0] = parse(appVersion);
+            const newer = la !== ca ? la > ca : lb !== cb ? lb > cb : lc > cc;
+            latestVersion = newer ? tag : "";
+          } else {
+            latestVersion = "";
+          }
+        })
+        .catch(() => { latestVersion = ""; });
+    }
 
     applyCssVariables();
 
@@ -165,7 +184,7 @@ async function loadAndDisplayOverlays(item, slotEl) {
   }
 
   try {
-    const mediaInfo = await getMediaInfo(item, config.fetch_address_data || false);
+    const mediaInfo = await getMediaInfo(item, config.fetch_address_data || false, config.geocoding_language || "en");
 
     // Info in den Slot schreiben (fadert mit Bild mit)
     if (infoEl && config.show_image_info && config.image_info_template) {
@@ -197,8 +216,14 @@ function buildDebugHtml(item, mediaInfo) {
         .join("")
     : row("addr", "-");
 
+  const versionStatus = latestVersion === null
+    ? `v${appVersion} <span style="opacity:.55;font-size:.85em">checking…</span>`
+    : latestVersion === ""
+      ? `v${appVersion} <span style="color:#4caf7d;font-size:.85em">✓ up to date</span>`
+      : `v${appVersion} <span style="color:#f59e0b;font-size:.85em">↑ v${latestVersion} available</span>`;
+
   return `<table>
-    ${row("MuralPicta", `v${appVersion}`)}
+    ${row("MuralPicta", versionStatus)}
     ${row("Datei", mediaInfo.filename || item.filename)}
     ${row("Pfad", mediaInfo.relativePath || item.relativePath || "-")}
     ${row("Typ", item.type)}

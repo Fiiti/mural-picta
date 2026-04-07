@@ -41,16 +41,16 @@ function saveCache() {
 loadCache();
 
 // ── Hilfsfunktionen ───────────────────────────────────────────────────────────
-function cacheKey(lat, lon) {
-  return `${parseFloat(lat).toFixed(3)}_${parseFloat(lon).toFixed(3)}`;
+function cacheKey(lat, lon, lang) {
+  return `${parseFloat(lat).toFixed(3)}_${parseFloat(lon).toFixed(3)}_${lang || "en"}`;
 }
 
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
-function fetchNominatim(lat, lon) {
+function fetchNominatim(lat, lon, lang) {
   return new Promise((resolve) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-    const req = https.get(url, { headers: { "User-Agent": "WallPanel-Server/1.0" } }, (res) => {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${lang || "en"}`;
+    const req = https.get(url, { headers: { "User-Agent": "MuralPicta/1.0" } }, (res) => {
       let data = "";
       res.on("data", (chunk) => (data += chunk));
       res.on("end", () => {
@@ -70,18 +70,18 @@ function fetchNominatim(lat, lon) {
   });
 }
 
-async function fetchWithRetry(lat, lon) {
-  let result = await fetchNominatim(lat, lon);
+async function fetchWithRetry(lat, lon, lang) {
+  let result = await fetchNominatim(lat, lon, lang);
   if (!result) {
     await delay(2000);
-    result = await fetchNominatim(lat, lon);
+    result = await fetchNominatim(lat, lon, lang);
   }
   return result; // kann null sein → Negativ-Cache
 }
 
 // ── Öffentliche API ───────────────────────────────────────────────────────────
-async function reverseGeocode(lat, lon) {
-  const key = cacheKey(lat, lon);
+async function reverseGeocode(lat, lon, lang) {
+  const key = cacheKey(lat, lon, lang);
 
   // Cache-Treffer (inkl. null = Negativ-Cache)
   if (key in cache) {
@@ -97,7 +97,7 @@ async function reverseGeocode(lat, lon) {
     if (wait > 0) await delay(wait);
     lastRequestTime = Date.now();
 
-    const result = await fetchWithRetry(lat, lon);
+    const result = await fetchWithRetry(lat, lon, lang);
     cache[key] = result;
     saveCache();
     return result;

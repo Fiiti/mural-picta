@@ -91,6 +91,10 @@
       "label": "Fetch location from GPS",
       "hint": "Reverse-geocodes GPS coordinates from image EXIF data using the Nominatim API (OpenStreetMap). Requires an internet connection."
     },
+    "geocoding_language": {
+      "label": "Place name language",
+      "hint": "Language for reverse-geocoded place names (country, city, etc.). Independent of the admin UI language."
+    },
     "exclude_filenames": {
       "label": "Exclude filenames",
       "hint": "Enter or comma adds a new entry.<br>Files matching any of these patterns will be excluded from the slideshow. Supports exact filenames or regular expressions."
@@ -169,6 +173,8 @@
     "restartConfirm": "Are you sure you want to restart the server? The slideshow will be briefly unavailable.",
     "reloadNote": "Opens the slideshow in a new browser tab.",
     "dockerStopHint": "To permanently stop the container, use: docker stop <containername>",
+    "upToDate": "Up to date",
+    "available": "available",
     "updateAvailable": "New version v{v} available on GitHub!",
     "restartBanner": "Settings saved — please restart the server to apply changes."
   },

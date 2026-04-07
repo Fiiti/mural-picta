@@ -14,6 +14,7 @@
   "image_info_template": "${DateTimeOriginal}",
   "info_position": "bottom-right",
   "fetch_address_data": false,
+  "geocoding_language": "en",
   "exclude_filenames": [],
   "exclude_folders": [],
   "video_loop": false,

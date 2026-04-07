@@ -91,6 +91,10 @@
       "label": "Standort aus GPS ermitteln",
       "hint": "Ermittelt Ortsnamen aus GPS-Koordinaten in EXIF-Daten über die Nominatim API (OpenStreetMap). Benötigt eine Internetverbindung."
     },
+    "geocoding_language": {
+      "label": "Sprache der Ortsnamen",
+      "hint": "Sprache für ermittelte Ortsnamen (Land, Stadt usw.) – unabhängig von der Admin-Oberflächensprache."
+    },
     "exclude_filenames": {
       "label": "Dateinamen ausschließen",
       "hint": "Enter oder Komma fügt neuen Eintrag hinzu.<br>Dateien, die einem dieser Muster entsprechen, werden von der Diashow ausgeschlossen. Unterstützt genaue Dateinamen oder reguläre Ausdrücke."
@@ -169,6 +173,8 @@
     "restartConfirm": "Server wirklich neu starten? Die Diashow ist kurzzeitig nicht verfügbar.",
     "reloadNote": "Öffnet die Diashow in einem neuen Browser-Tab.",
     "dockerStopHint": "Um den Container dauerhaft zu stoppen, verwende: docker stop <containername>",
+    "upToDate": "Aktuell",
+    "available": "verfügbar",
     "updateAvailable": "Neue Version v{v} auf GitHub verfügbar!",
     "restartBanner": "Einstellungen gespeichert — bitte den Server neu starten, damit die Änderungen aktiv werden."
   },

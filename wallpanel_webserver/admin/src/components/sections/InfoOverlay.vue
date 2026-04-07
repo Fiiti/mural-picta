@@ -47,6 +47,28 @@
         <p class="hint">{{ $t('fields.fetch_address_data.hint') }}</p>
       </div>
 
+      <!-- Geocoding language -->
+      <div class="field">
+        <label for="geocoding-language">{{ $t('fields.geocoding_language.label') }}</label>
+        <select
+          id="geocoding-language"
+          :value="modelValue.geocoding_language"
+          @change="update('geocoding_language', $event.target.value)"
+        >
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="nl">Nederlands</option>
+          <option value="pl">Polski</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+        </select>
+        <p class="hint">{{ $t('fields.geocoding_language.hint') }}</p>
+      </div>
+
       <!-- Template textarea -->
       <div class="field">
         <label for="image-info-template">{{ $t('fields.image_info_template.label') }}</label>

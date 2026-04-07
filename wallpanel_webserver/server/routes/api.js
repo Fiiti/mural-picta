@@ -88,8 +88,9 @@ router.get("/geocode", async (req, res) => {
   if (isNaN(lat) || isNaN(lon)) {
     return res.status(400).json({ error: "lat/lon fehlt oder ungültig" });
   }
+  const lang = (req.query.lang || "en").replace(/[^a-zA-Z-]/g, "").slice(0, 10);
   try {
-    const result = await geocodeService.reverseGeocode(lat, lon);
+    const result = await geocodeService.reverseGeocode(lat, lon, lang);
     res.json(result || {});
   } catch (err) {
     logError("Geocode-Fehler: " + err.message);

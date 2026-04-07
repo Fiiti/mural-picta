@@ -26,9 +26,10 @@ async function extractExif(imageUrl) {
  * Bei Bildern: EXIF auslesen, optional GPS → Ortsname.
  * @param {Object} item            - Medieobjekt { url, type, filename, ... }
  * @param {boolean} fetchAddress   - GPS-Daten via /api/geocode auflösen?
+ * @param {string}  geocodingLang - Sprache für Ortsnamen (z.B. "de", "en", "fr")
  * @returns {Promise<Object>} Datenobjekt für template.js
  */
-async function getMediaInfo(item, fetchAddress = false) {
+async function getMediaInfo(item, fetchAddress = false, geocodingLang = "en") {
   const info = {
     filename: item.filename,
     relativePath: item.relativePath || "",
@@ -50,7 +51,7 @@ async function getMediaInfo(item, fetchAddress = false) {
   if (fetchAddress && exifData.latitude != null && exifData.longitude != null) {
     try {
       const res = await fetch(
-        `/api/geocode?lat=${exifData.latitude}&lon=${exifData.longitude}`
+        `/api/geocode?lat=${exifData.latitude}&lon=${exifData.longitude}&lang=${encodeURIComponent(geocodingLang)}`
       );
       if (res.ok) {
         const geo = await res.json();
