@@ -40,12 +40,37 @@ Controla el comportamiento principal del pase de diapositivas.
 
 ---
 
-### Efecto Ken Burns
+### Efecto Ken Burns y Modo Panorama
 Añade una animación lenta de zoom y panorámica a las imágenes mientras se muestran.
 
 - **Activar/Desactivar** — activar o desactivar el efecto
 - **Factor de zoom** — nivel de zoom (ej. 1.3 = 30% de zoom)
 - La dirección de la panorámica se elige aleatoriamente para un aspecto natural
+
+**Modo panorama (para imágenes anchas)**
+
+Las imágenes muy anchas como panoramas de 180° se tratan por separado: en lugar de hacer zoom, MuralPicta realiza un barrido horizontal para un resultado cinematográfico.
+
+- **Activar modo panorama** — activa la detección automática
+- **Umbral de relación de aspecto** — relación anchura/altura mínima para que una imagen sea tratada como panorámica
+
+**¿Cómo se calcula la relación de aspecto?**
+
+Simplemente: `Ancho ÷ Alto = Ratio`
+
+| Ratio | Ejemplo | Valoración |
+|------:|---------|-----------|
+| 1,33 | 4:3 — foto estándar | Normal |
+| 1,78 | 16:9 — pantalla ancha | Normal |
+| 2,00 | El doble de ancho que de alto | Límite |
+| 2,35 | Formato cinemático | Muy ancho |
+| **2,50** | **★ Umbral por defecto** | **Recomendado** |
+| 3,0+ | Panorama real | Panorama ✓ |
+
+El valor por defecto **2,5** detecta fiablemente los verdaderos panoramas y deja intactas las fotos normales (4:3 = 1,33; 16:9 = 1,78) — independientemente de la resolución en píxeles.
+
+- **Dirección del barrido** — Izquierda→Derecha, Derecha→Izquierda o aleatorio por imagen
+- **Velocidad máx. de barrido (px/s)** — si el tiempo de visualización es demasiado corto, la duración se amplía automáticamente
 
 ---
 

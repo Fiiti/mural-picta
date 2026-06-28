@@ -40,12 +40,37 @@ Controlla il comportamento principale della presentazione.
 
 ---
 
-### Effetto Ken Burns
+### Effetto Ken Burns e Modalità Panorama
 Aggiunge un'animazione lenta di zoom e panoramica alle immagini durante la visualizzazione.
 
 - **Attiva/Disattiva** — attivare o disattivare l'effetto
 - **Fattore di zoom** — livello di zoom (es. 1.3 = 30% di zoom)
 - La direzione della panoramica viene scelta casualmente per un aspetto naturale
+
+**Modalità panorama (per immagini larghe)**
+
+Le immagini molto larghe come i panorami a 180° vengono trattate separatamente: invece di zoomare, MuralPicta scorre orizzontalmente per un risultato cinematografico.
+
+- **Attiva modalità panorama** — attiva il rilevamento automatico
+- **Soglia del rapporto** — rapporto larghezza/altezza minimo perché un'immagine venga trattata come panorama
+
+**Come viene calcolato il rapporto?**
+
+Semplicemente: `Larghezza ÷ Altezza = Rapporto`
+
+| Rapporto | Esempio | Valutazione |
+|---------:|---------|------------|
+| 1,33 | 4:3 — foto standard | Normale |
+| 1,78 | 16:9 — widescreen | Normale |
+| 2,00 | Il doppio in larghezza rispetto all'altezza | Limite |
+| 2,35 | Formato cinematografico | Molto largo |
+| **2,50** | **★ Soglia predefinita** | **Consigliato** |
+| 3,0+ | Vero panorama | Panorama ✓ |
+
+Il valore predefinito **2,5** rileva in modo affidabile i veri panorami lasciando intatte le foto standard (4:3 = 1,33; 16:9 = 1,78) — indipendentemente dalla risoluzione in pixel.
+
+- **Direzione della panoramica** — Sinistra→Destra, Destra→Sinistra o casuale per immagine
+- **Velocità max. panoramica (px/s)** — se il tempo di visualizzazione è troppo breve, la durata viene estesa automaticamente
 
 ---
 

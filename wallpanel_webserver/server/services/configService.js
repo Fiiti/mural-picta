@@ -20,6 +20,15 @@ function load() {
   }
   try {
     const user = JSON.parse(fs.readFileSync(USER_CONFIG_PATH, "utf8"));
+    // Unbekannte Keys erkennen (z.B. nach Umbenennung in neuer Version)
+    const known = new Set([...Object.keys(defaults), "admin_pin"]);
+    for (const key of Object.keys(user)) {
+      if (!known.has(key)) {
+        const msg = `[Config] Unbekannter Key ignoriert: "${key}" – vermutlich ein umbenanntes Feld aus einer älteren Version. Bitte im Admin prüfen und ggf. neu setzen.`;
+        console.warn(msg);
+        if (global.wallpanelLogError) global.wallpanelLogError(msg);
+      }
+    }
     return { ...defaults, ...user };
   } catch (err) {
     console.error("Fehler beim Laden der Konfiguration:", err.message);

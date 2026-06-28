@@ -49,6 +49,16 @@ html, body {
   to   { transform: scale(var(--kb-zoom, 1.3)); }
 }
 
+/* ── Panorama-Sweep Animation ────────────────────────────── */
+@keyframes panoramaSweepLTR {
+  from { object-position: 0% center; }
+  to   { object-position: 100% center; }
+}
+@keyframes panoramaSweepRTL {
+  from { object-position: 100% center; }
+  to   { object-position: 0% center; }
+}
+
 /* ── Fortschrittsbalken ───────────────────────────────────── */
 /* Transition statt Animation – zuverlässigerer Reset via JS */
 #progress-bar {

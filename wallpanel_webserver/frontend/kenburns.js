@@ -43,3 +43,41 @@ function stopKenBurns(element) {
   element.style.transform = "";
   element.style.transformOrigin = "";
 }
+
+/**
+ * Panorama-Sweep für Breitbilder (z.B. 180°-Panoramas).
+ * Skaliert das Bild auf volle Containerhöhe (object-fit: cover) und schwenkt
+ * horizontal von links nach rechts oder umgekehrt. Die Dauer wird nach oben
+ * angepasst, wenn die Anzeigezeit eine zu hohe Scrollgeschwindigkeit ergäbe.
+ *
+ * @param {HTMLImageElement} element       - Das img-Element
+ * @param {"ltr"|"rtl"}     direction      - Schwenkrichtung
+ * @param {number}          displayTime    - Anzeigezeit in Sekunden
+ * @param {number}          maxSpeedPxSec  - Maximale Scrollgeschwindigkeit in px/s
+ */
+function startPanorama(element, direction, displayTime, maxSpeedPxSec) {
+  const containerW = element.parentElement?.offsetWidth  || window.innerWidth;
+  const containerH = element.parentElement?.offsetHeight || window.innerHeight;
+  const naturalW   = element.naturalWidth  || containerW;
+  const naturalH   = element.naturalHeight || containerH;
+
+  // Mit object-fit: cover ist der Skalierungsfaktor das Maximum beider Achsen
+  const scale      = Math.max(containerW / naturalW, containerH / naturalH);
+  const scaledW    = naturalW * scale;
+  const scrollable = Math.max(0, scaledW - containerW);
+
+  // Dauer: mindestens displayTime, aber nie schneller als maxSpeedPxSec
+  const minDuration = scrollable > 0 ? scrollable / maxSpeedPxSec : displayTime;
+  const duration    = Math.max(displayTime, minDuration);
+
+  element.style.animation    = "none";
+  element.style.objectFit    = "cover";
+  element.style.objectPosition = direction === "rtl" ? "100% center" : "0% center";
+  element.style.transform    = "";
+  element.style.transformOrigin = "";
+
+  void element.offsetWidth; // Reflow erzwingen
+
+  const animName = direction === "rtl" ? "panoramaSweepRTL" : "panoramaSweepLTR";
+  element.style.animation = `${animName} ${duration}s linear forwards`;
+}

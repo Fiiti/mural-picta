@@ -40,12 +40,37 @@ Steuert das Kernverhalten der Diashow.
 
 ---
 
-### Ken Burns Effekt
+### Ken Burns Effekt und Panoramadarstellung
 Fügt eine langsame, cinematische Zoom-und-Schwenk-Animation zu Bildern hinzu.
 
 - **An/Aus** — Effekt aktivieren oder deaktivieren
 - **Zoom-Faktor** — wie weit das Bild heranzoomt (z. B. 1.3 = 30 % Zoom)
 - Die Schwenkrichtung wird pro Bild zufällig gewählt
+
+**Panoramamodus (für Breitbilder)**
+
+Breite Bilder wie 180°-Panoramen oder zusammengesetzte Landschaftsaufnahmen werden separat behandelt: Statt zu zoomen, schwenkt MuralPicta horizontal über das Bild – für ein kinematografisches Ergebnis.
+
+- **Panoramamodus aktivieren** — schaltet die automatische Erkennung ein
+- **Seitenverhältnis-Schwellenwert** — ab welchem Breite-zu-Höhe-Verhältnis ein Bild als Panorama gilt
+
+**Wie wird das Seitenverhältnis berechnet?**
+
+Ganz einfach: `Breite ÷ Höhe = Verhältnis`
+
+| Verhältnis | Beispiel | Einschätzung |
+|-----------:|----------|-------------|
+| 1,33 | 4:3 — Standardfoto | Normal |
+| 1,78 | 16:9 — Widescreen | Normal |
+| 2,00 | Doppelt so breit wie hoch | Grenzbereich |
+| 2,35 | Kinoformat | Sehr breit |
+| **2,50** | **★ Standard-Schwellenwert** | **Empfohlen** |
+| 3,0+ | Echtes Panorama | Panorama ✓ |
+
+Der Standard von **2,5** erkennt echte Panoramen zuverlässig und lässt normale Fotos (4:3 = 1,33; 16:9 = 1,78) vollständig unberührt — egal wie viele Pixel das Bild hat oder welche Kamera es aufgenommen hat.
+
+- **Schwenkrichtung** — Links→Rechts, Rechts→Links oder pro Bild zufällig
+- **Max. Schwenkgeschwindigkeit (px/s)** — ist die Anzeigezeit zu kurz für einen vollständigen Schwenk, wird die Dauer automatisch verlängert
 
 ---
 

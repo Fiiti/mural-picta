@@ -2,7 +2,7 @@
   "sections": {
     "mediaSource": "Media Source",
     "slideshow": "Slideshow Timing",
-    "kenBurns": "Ken Burns Effect",
+    "kenBurns": "Ken Burns Effect & Panorama",
     "infoOverlay": "Image Info Overlay",
     "video": "Video",
     "display": "Display",
@@ -56,6 +56,44 @@
     "ken_burns_zoom": {
       "label": "Ken Burns zoom factor",
       "hint": "Maximum zoom level during the Ken Burns effect (e.g. 1.3 = 130% of original size). Range: 1.0 – 2.0."
+    },
+    "panorama_mode_enabled": {
+      "label": "Panorama mode (wide images)",
+      "hint": "Automatically detects extra-wide images (e.g. 180° panoramas) and sweeps across them instead of zooming. The width threshold below determines when an image is treated as panoramic."
+    },
+    "panorama_threshold_ratio": {
+      "label": "Panorama threshold (aspect ratio)",
+      "hint": "Images whose width-to-height ratio exceeds this value are swept as panoramas. Default: 2.5.",
+      "helpToggle": "ℹ️ How does the aspect ratio work?",
+      "helpIntro": "The ratio is simply Width ÷ Height. A value of 2.5 means the image is 2.5× as wide as it is tall.",
+      "helpColRatio": "Ratio",
+      "helpColExample": "Example",
+      "helpColAssess": "Assessment",
+      "help133": "4:3 — standard photo",
+      "help178": "16:9 — widescreen",
+      "help200": "Twice as wide as tall",
+      "help235": "Cinematic format",
+      "help250": "★ Default threshold",
+      "help300": "True panorama",
+      "assessNormal": "Normal",
+      "assessBorder": "Borderline",
+      "assessWide": "Very wide",
+      "assessRecommended": "Recommended",
+      "assessPano": "Panorama ✓",
+      "helpNote": "Default 2.5 (★): detects true panoramas while leaving standard photos (4:3 = 1.33, 16:9 = 1.78) completely untouched — regardless of pixel count or camera resolution."
+    },
+    "panorama_direction": {
+      "label": "Sweep direction",
+      "hint": "Direction of the panorama sweep.",
+      "options": {
+        "ltr": "Left → Right",
+        "rtl": "Right → Left",
+        "random": "Random"
+      }
+    },
+    "panorama_max_speed": {
+      "label": "Max. sweep speed (px/s)",
+      "hint": "Maximum scroll speed in pixels per second. If the display time is too short for a smooth sweep, the duration is extended automatically. Default: 300 px/s."
     },
     "video_volume": {
       "label": "Video volume",

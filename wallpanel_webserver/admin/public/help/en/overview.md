@@ -40,12 +40,37 @@ Controls the core slideshow behaviour.
 
 ---
 
-### Ken Burns Effect
+### Ken Burns Effect and Panorama Mode
 Adds a slow, cinematic zoom-and-pan animation to images while they are displayed.
 
 - **Enable/Disable** — toggle the effect
 - **Zoom factor** — how far in the image zooms (e.g. 1.3 = 30% zoom)
 - The pan direction is chosen randomly per image for a natural feel
+
+**Panorama Mode (for wide images)**
+
+Wide images like 180° panoramas or stitched landscape shots are handled separately: instead of zooming, MuralPicta sweeps horizontally across the image for a smooth cinematic result.
+
+- **Enable panorama mode** — activates automatic detection
+- **Aspect ratio threshold** — minimum width-to-height ratio for an image to be treated as a panorama
+
+**How the aspect ratio is calculated:**
+
+Simply divide width by height: `Width ÷ Height = Ratio`
+
+| Ratio | Example | Assessment |
+|------:|---------|-----------|
+| 1.33 | 4:3 — standard photo | Normal |
+| 1.78 | 16:9 — widescreen | Normal |
+| 2.00 | Twice as wide as tall | Borderline |
+| 2.35 | Cinematic format | Very wide |
+| **2.50** | **★ Default threshold** | **Recommended** |
+| 3.0+ | True panorama | Panorama ✓ |
+
+The default of **2.5** reliably detects true panoramas while leaving standard photos (4:3 = 1.33, 16:9 = 1.78) completely untouched — regardless of pixel count or camera resolution.
+
+- **Sweep direction** — Left→Right, Right→Left, or Random per image
+- **Max. sweep speed (px/s)** — if the display time is too short for a full sweep, the duration is automatically extended
 
 ---
 

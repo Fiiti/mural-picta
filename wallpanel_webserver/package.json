@@ -1,6 +1,6 @@
 {
   "name": "wallpanel-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Eigenständiger Bild- und Video-Diashow-Webserver für Wandpanels",
   "main": "server/index.js",
   "scripts": {

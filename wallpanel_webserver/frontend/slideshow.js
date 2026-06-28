@@ -143,13 +143,21 @@ function showNextMedia(isFirst = false) {
     // ITemp in den neuen Slot laden – fadert automatisch mit dem Slot mit
     loadAndDisplayOverlays(item, inactiveEl);
 
-    // Ken Burns starten
+    // Ken Burns oder Panorama-Sweep starten
     if (config.ken_burns_enabled && item.type === "image") {
-      const mediaEl = inactiveEl.querySelector("img, video");
+      const mediaEl = inactiveEl.querySelector("img");
       if (mediaEl) {
-        const displayTime = (item.type === "image" ? config.display_time_image : config.display_time_video) || 15;
+        const displayTime = config.display_time_image || 15;
         const kbDuration = displayTime + (config.crossfade_time || 3) * 2;
-        startKenBurns(mediaEl, config.ken_burns_zoom || 1.3, kbDuration);
+        const threshold = config.panorama_threshold_ratio || 2.5;
+        const isPanorama = config.panorama_mode_enabled && (mediaEl.naturalWidth / mediaEl.naturalHeight) >= threshold;
+        if (isPanorama) {
+          const rawDir = config.panorama_direction || "ltr";
+          const dir = rawDir === "random" ? (Math.random() < 0.5 ? "ltr" : "rtl") : rawDir;
+          startPanorama(mediaEl, dir, displayTime, config.panorama_max_speed || 300);
+        } else {
+          startKenBurns(mediaEl, config.ken_burns_zoom || 1.3, kbDuration);
+        }
       }
     }
 
@@ -274,7 +282,15 @@ function loadMediaIntoSlot(slotEl, item, onReady) {
     video.loop = config.video_loop || false;
     video.autoplay = true;
     video.playsInline = true;
-    video.oncanplay = onReady;
+    // { once: true } verhindert, dass canplay bei jedem Loop-Durchlauf den Timer zurücksetzt
+    video.addEventListener("canplay", onReady, { once: true });
+    // Ohne Loop: wenn Video endet bevor displayTimer abläuft → sofort weiterschalten
+    if (!video.loop) {
+      video.addEventListener("ended", () => {
+        if (displayTimer) clearTimeout(displayTimer);
+        showNextMedia();
+      }, { once: true });
+    }
     video.onerror = () => {
       console.warn("Video konnte nicht geladen werden:", item.url);
       onReady();

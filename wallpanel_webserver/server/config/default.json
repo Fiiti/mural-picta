@@ -2,7 +2,7 @@
   "media_base_path": "/data/media",
   "media_list_update_interval": 600,
   "media_order": "random",
-  "display_time_image": 15,
+  "display_time_image": 5,
   "display_time_video": 15,
   "crossfade_time": 3,
   "ken_burns_enabled": true,
@@ -19,5 +19,9 @@
   "exclude_folders": [],
   "video_loop": false,
   "video_volume": 0,
+  "panorama_mode_enabled": false,
+  "panorama_threshold_ratio": 2.5,
+  "panorama_direction": "ltr",
+  "panorama_max_speed": 300,
   "admin_pin": null
 }

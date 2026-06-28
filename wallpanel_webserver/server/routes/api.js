@@ -35,8 +35,11 @@ router.get("/config", (req, res) => {
 // POST /api/config
 router.post("/config", express.json(), (req, res) => {
   try {
+    const body = { ...req.body };
+    // admin_pin wird ausschliesslich ueber /api/set-pin und /api/remove-pin verwaltet
+    delete body.admin_pin;
     const current = configService.load();
-    const updated = { ...current, ...req.body };
+    const updated = { ...current, ...body };
     configService.save(updated);
     res.json({ ok: true });
   } catch (err) {

@@ -40,12 +40,37 @@ Contrôle le comportement principal du diaporama.
 
 ---
 
-### Effet Ken Burns
+### Effet Ken Burns et Mode Panorama
 Ajoute une animation lente de zoom et panoramique aux images pendant leur affichage.
 
 - **Activer/Désactiver** — activer ou désactiver l'effet
 - **Facteur de zoom** — niveau de zoom (ex. 1.3 = 30% de zoom)
 - La direction du panoramique est choisie aléatoirement pour un rendu naturel
+
+**Mode panorama (pour les images larges)**
+
+Les images très larges comme les panoramas 180° sont traitées séparément : au lieu de zoomer, MuralPicta effectue un balayage horizontal pour un résultat cinématographique.
+
+- **Activer le mode panorama** — active la détection automatique
+- **Seuil de ratio** — ratio largeur/hauteur minimum pour qu'une image soit traitée comme panoramique
+
+**Comment le ratio est-il calculé ?**
+
+Simplement : `Largeur ÷ Hauteur = Ratio`
+
+| Ratio | Exemple | Appréciation |
+|------:|---------|-------------|
+| 1,33 | 4:3 — photo standard | Normal |
+| 1,78 | 16:9 — écran large | Normal |
+| 2,00 | Deux fois plus large que haut | Limite |
+| 2,35 | Format cinéma | Très large |
+| **2,50** | **★ Seuil par défaut** | **Recommandé** |
+| 3,0+ | Vrai panorama | Panorama ✓ |
+
+Le défaut de **2,5** détecte fiablement les vrais panoramas tout en laissant intactes les photos standard (4:3 = 1,33 ; 16:9 = 1,78) — quelle que soit leur résolution en pixels.
+
+- **Direction du balayage** — Gauche→Droite, Droite→Gauche ou aléatoire par image
+- **Vitesse max. de balayage (px/s)** — si le temps d'affichage est trop court, la durée est prolongée automatiquement
 
 ---
 
